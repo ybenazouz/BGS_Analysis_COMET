@@ -5,75 +5,21 @@
 %% README
 % TO DO: write the object that each P refers to here. 
 % NB: tables and graphs are not yet labelled.
-% NB: Downloading the SLM toolbox and the optimization toolbox are needed
-% to run this file. 
-
-% @Myrte: Sorry voor dit chaos bestand let niet op de rommel.
 
 clear
 close all
 
-%% Load data 
-folder = fileparts(which(mfilename)); 
-addpath(genpath(folder));
+%% Load .mat files 
+% Make sure you run the GetandSave.m file before running this file. 
+% Open file directory with all P.mat files before loading 
 
-P1 = [];
-P2 = [];
-P3 = [];
-P4 = [];
-P5 = [];
-P6 = [];
-P7 = [];
-P8 = [];
-P9 = [];
-P10 = [];
-P11 = [];
-P12 = [];
-P13 = [];
-P14 = [];
-P15 = [];
-P16 = [];
-P17 = []; 
-for i = 2:1:16
-    P1 = [P1, xlsread('expCOMETparts_blauwebehuizing_1408', i, 'A2:A4001')];
-    P2 = [P2, xlsread('expCOMETparts_diffusor_glad_1413', i, 'A2:A4001')];
-    P3 = [P3, xlsread('expCOMETparts_diffusor_ruw_1414', i, 'A2:A4001')];
-    P4 = [P4, xlsread('expCOMETparts_FiberOranjeDun_dicht', i, 'A2:A4001')];
-    P5 = [P5, xlsread('expCOMETparts_FiberOranjeDun_open', i, 'A2:A4001')];
-    P6 = [P6, xlsread('expCOMETparts_FiberZwartDik_kort_dicht', i, 'A2:A4001')];
-    P7 = [P7, xlsread('expCOMETparts_FiberZwartDik_kort_open', i, 'A2:A4001')];
-    P8 = [P8, xlsread('expCOMETparts_FiberZwartDik_lang_dicht', i, 'A2:A4001')];
-    P9 = [P9, xlsread('expCOMETparts_FiberZwartDik_lang_open', i, 'A2:A4001')];
-    P10 = [P10, xlsread('expCOMETparts_filter_kant1', i, 'A2:A4001')];
-    P11 = [P11, xlsread('expCOMETparts_filter_kant2', i, 'A2:A4001')];
-    P12 = [P12, xlsread('expCOMETparts_glue_mr1a_glaseerst', i, 'A2:A4001')];
-    P13 = [P13, xlsread('expCOMETparts_glue_mr1a_lijmeerst', i, 'A2:A4001')];
-    P14 = [P14, xlsread('expCOMETparts_zilverenhulsmetlenzen', i, 'A2:A4001')];
-    %NB: measurements below are BGS in air and against a mirror. 
-    P15 = [P15, xlsread('expCOMETparts_niks_laserinhouder', i, 'A2:A4001')];
-    P16 = [P16, xlsread('expCOMETparts_niks_laserinlucht', i, 'A2:A4001')];
-    P17 = [P17, xlsread('expCOMETparts_spiegel', i, 'A2:A4001')];
-end 
-
+for i = 1:1:17
+    filename = sprintf('%s%d','P',i) ; 
+    load(filename)
+end  
 %% Mean data per Part 
 
-meanP1 = mean(P1,2); 
-% meanP2 = mean(P2,2);
-% meanP3 = mean(P3,2);
-% meanP4 = mean(P4,2); 
-% meanP5 = mean(P5,2); 
-% meanP6 = mean(P6,2); 
-% meanP7 = mean(P7,2); 
-meanP8 = mean(P8,2);
-% meanP9 = mean(P8,2); 
-% meanP10 = mean(P8,2); 
-% meanP11= mean(P8,2); 
-% meanP12 = mean(P8,2); 
-% meanP13 = mean(P8,2); 
-% meanP14 = mean(P8,2); 
-% meanP15 = mean(P8,2); 
-% meanP16 = mean(P8,2); 
-% meanP17 = mean(P8,2); 
+% function voor voorbewerken
 
 %% Plot data
 
