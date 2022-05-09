@@ -8,98 +8,10 @@
 % O20 = hypoxic tissue, oxygen pressure is reduced to approximately zero by applying pressure with the COMET head.  
 % NL = New Laser 
 
-% Before running, open folder #1 for subjects
+% Before running, open folder #3 for subject 3. 
 
 clear
 close all
-%% Load data - 630 nm
-folder = fileparts(which(mfilename)); 
-addpath(genpath(folder));
-
-%% O2norm
-P1M1_O2norm_630nm = [];
-P1M2_O2norm_630nm = [];
-P1M3_O2norm_630nm = [];
-P1M4_O2norm_630nm = [];
-P1M5_O2norm_630nm = [];
-P1M6_O2norm_630nm = [];
-P1M7_O2norm_630nm = [];
-P1M8_O2norm_630nm = [];
-for i = 2:1:6
-    P1M1_O2norm_630nm = [P1M1_O2norm_630nm, xlsread('S1_M1_0911_O2norm.xlsx', i, 'A2:A4001')];
-    P1M2_O2norm_630nm = [P1M2_O2norm_630nm, xlsread('S1_M2_1052_O2norm.xlsx', i, 'A2:A4001')];
-    P1M3_O2norm_630nm = [P1M3_O2norm_630nm, xlsread('S1_M3_1156_O2norm.xlsx', i, 'A2:A4001')];
-    P1M4_O2norm_630nm = [P1M4_O2norm_630nm, xlsread('S1_M4_1250_O2norm.xlsx', i, 'A2:A4001')];
-    P1M5_O2norm_630nm = [P1M5_O2norm_630nm, xlsread('S1_M5_1353_O2norm.xlsx', i, 'A2:A4001')];
-    P1M6_O2norm_630nm = [P1M6_O2norm_630nm, xlsread('S1_M6_1455_O2norm.xlsx', i, 'A2:A4001')];
-    P1M7_O2norm_630nm = [P1M7_O2norm_630nm, xlsread('S1_M7_1556_O2norm.xlsx', i, 'A2:A4001')];
-    P1M8_O2norm_630nm = [P1M8_O2norm_630nm, xlsread('S1_M8_1657_O2norm.xlsx', i, 'A2:A4001')];
-end
-%% O20
-
-P1M1_O20_630nm = [];
-P1M2_O20_630nm = [];
-P1M3_O20_630nm = [];
-P1M4_O20_630nm = [];
-P1M5_O20_630nm = [];
-P1M6_O20_630nm = [];
-P1M7_O20_630nm = [];
-P1M8_O20_630nm = [];
-P1M9_O20_630nm = [];
-for i = 2:1:6
-    P1M1_O20_630nm = [P1M1_O20_630nm, xlsread('S1_M1_0911_O20.xlsx', i, 'A2:A4001')]; 
-    P1M2_O20_630nm = [P1M3_O20_630nm, xlsread('S1_M2_1052_O20.xlsx', i, 'A2:A4001')];
-    P1M3_O20_630nm = [P1M4_O20_630nm, xlsread('S1_M3_1156_O20.xlsx', i, 'A2:A4001')];
-    P1M4_O20_630nm = [P1M5_O20_630nm, xlsread('S1_M4_1250_O20.xlsx', i, 'A2:A4001')];
-    P1M5_O20_630nm = [P1M6_O20_630nm, xlsread('S1_M5_1353_O20.xlsx', i, 'A2:A4001')];
-    P1M6_O20_630nm = [P1M7_O20_630nm, xlsread('S1_M6_1455_O20.xlsx', i, 'A2:A4001')];
-    P1M7_O20_630nm = [P1M8_O20_630nm, xlsread('S1_M7_1556_O20.xlsx', i, 'A2:A4001')];
-    P1M8_O20_630nm = [P1M9_O20_630nm, xlsread('S1_M8_1657_O20.xlsx', i, 'A2:A4001')];
-end
-
-%% Load data - 670 nm
-%% O2norm 
-
-P1M1_O2norm_670nm = [];
-P1M2_O2norm_670nm = [];
-P1M3_O2norm_670nm = [];
-P1M4_O2norm_670nm = [];
-P1M5_O2norm_670nm = [];
-P1M6_O2norm_670nm = [];
-P1M7_O2norm_670nm = [];
-P1M8_O2norm_670nm = [];
-for i = 2:1:6
-    P1M1_O2norm_670nm = [P1M1_O2norm_670nm, xlsread('S1_M1_0911_O2norm.xlsx', i, 'B2:B4001')];
-    P1M2_O2norm_670nm = [P1M2_O2norm_670nm, xlsread('S1_M2_1052_O2norm.xlsx', i, 'B2:B4001')];
-    P1M3_O2norm_670nm = [P1M3_O2norm_670nm, xlsread('S1_M3_1156_O2norm.xlsx', i, 'B2:B4001')];
-    P1M4_O2norm_670nm = [P1M4_O2norm_670nm, xlsread('S1_M4_1250_O2norm.xlsx', i, 'B2:B4001')];
-    P1M5_O2norm_670nm = [P1M5_O2norm_670nm, xlsread('S1_M5_1353_O2norm.xlsx', i, 'B2:B4001')];
-    P1M6_O2norm_670nm = [P1M6_O2norm_670nm, xlsread('S1_M6_1455_O2norm.xlsx', i, 'B2:B4001')];
-    P1M7_O2norm_670nm = [P1M7_O2norm_670nm, xlsread('S1_M7_1556_O2norm.xlsx', i, 'B2:B4001')];
-    P1M8_O2norm_670nm = [P1M8_O2norm_670nm, xlsread('S1_M8_1657_O2norm.xlsx', i, 'B2:B4001')];
-end
-
-%% O20
-P1M1_O20_670nm = [];
-P1M2_O20_670nm = [];
-P1M3_O20_670nm = [];
-P1M4_O20_670nm = [];
-P1M5_O20_670nm = [];
-P1M6_O20_670nm = [];
-P1M7_O20_670nm = [];
-P1M8_O20_670nm = [];
-P1M9_O20_670nm = [];
-for i = 2:1:6
-    P1M1_O20_670nm = [P1M1_O20_670nm, xlsread('S1_M1_0911_O20.xlsx', i, 'B2:B4001')]; 
-    P1M2_O20_670nm = [P1M3_O20_670nm, xlsread('S1_M2_1052_O20.xlsx', i, 'B2:B4001')];
-    P1M3_O20_670nm = [P1M4_O20_670nm, xlsread('S1_M3_1156_O20.xlsx', i, 'B2:B4001')];
-    P1M4_O20_670nm = [P1M5_O20_670nm, xlsread('S1_M4_1250_O20.xlsx', i, 'B2:B4001')];
-    P1M5_O20_670nm = [P1M6_O20_670nm, xlsread('S1_M5_1353_O20.xlsx', i, 'B2:B4001')];
-    P1M6_O20_670nm = [P1M7_O20_670nm, xlsread('S1_M6_1455_O20.xlsx', i, 'B2:B4001')];
-    P1M7_O20_670nm = [P1M8_O20_670nm, xlsread('S1_M7_1556_O20.xlsx', i, 'B2:B4001')];
-    P1M8_O20_670nm = [P1M9_O20_670nm, xlsread('S1_M8_1657_O20.xlsx', i, 'B2:B4001')];
-end 
-
 %% Finding median of maxima 
 % This maximum assumes that the second measurement is the maximum value for
 % eacht measurement (?). Can we not first correct the data and then use

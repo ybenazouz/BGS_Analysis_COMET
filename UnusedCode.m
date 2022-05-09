@@ -1,0 +1,187 @@
+% Code that might still be usefull later on. 
+% Serves only as registration and to not lose them. 
+
+%% integral of cuntion? - date: 09.05.2022
+integral = cell(1,N) ;
+fun = @(x,P1,P2,lambdas) P(1) + P(2)*exp(lambdas*x) ; 
+for h = 1:N  
+   fun = @(x) coeffparts{1,h}.multipliers(1) + coeffparts{1,h}.multipliers(2)*exp(coeffparts{1,h}.lambdas*x) ;
+   integral(h) = {integral(fun,0,Inf)} ; 
+end
+
+for h = 1:N  
+   fun = @(x) coeffparts{1,h}.multipliers(1) + coeffparts{1,h}.multipliers(2)*exp(coeffparts{1,h}.lambdas*x) ;
+   integral(h) = {integral(fun,0,Inf)} ; 
+end
+
+
+%% DFexpfit bar - date: 09.05.2022
+bar(ysv_scaled);
+
+%% DFLIFETIME BESTANDEN - date: 09.05.2022
+
+%function [lambdas,,xy] = DFlifetime(x,y) 
+% This function will generate an exponential function: -A + B*exp(c*x) + D*exp(e*x) + F*exp(g*x)
+
+yy = smoothparts{8} ; % the file you want to fit 
+
+x  = linspace(1,5,2000)' ; % because exponentials don't do well with large numbers, we are taking our range within a lower num
+y  = log(yy((1:2000),1)) ; % a log distribution seems more fitting due to the shape of the data
+
+% calculate integrals
+iy1 = cumtrapz(x, y);
+iy2 = cumtrapz(x, iy1);
+iy3 = cumtrapz(x, iy2);
+
+% get exponentials lambdas
+Y = [iy1, iy2, iy3, x.^3, x.^2, x, ones(size(x))];
+A = pinv(Y)*y;
+lambdas = eig([A(1), A(2), A(3); 1, 0, 0; 0, 1, 0]);
+
+% get exponentials multipliers
+X = [ones(size(x)), exp(lambdas(1)*x), exp(lambdas(2)*x), exp(lambdas(3)*x)];
+P = pinv(X)*y;
+
+
+%% plot DFLIFETIME!!!!!!! - date: 09.05.2022
+
+%fourfit = -P(1)-12.6 + P(2)*exp(lambdas(1)*x) + P(3)*exp(lambdas(2)*x) + P(4)*exp(lambdas(3)*x) ; 
+monofit = P(1) + P(2)*exp(lambdas*x) ; 
+
+figure
+plot(x, monofit)
+hold on 
+plot (x, y)
+%% get data over large amount of n to define which is best - date: 09.05.2022
+
+% for nn = 1:N
+y = smoothparts{8} ;
+
+% get data
+x  = linspace(1,5,2000)' ;
+y  = log(y((1:2000),1)) ; 
+
+% calculate n integrals of y and n-1 powers of x
+n = 10;
+iy = zeros(length(x), n);
+xp = zeros(length(x), n-1);
+iy(:,1) = cumtrapz(x, y);
+xp(:,1) = ones(size(x));
+for ii=2:1:n
+    iy(:, ii) = cumtrapz(x, iy(:, ii-1));
+    xp(:, ii) = xp(:, ii-1) .* x;
+end
+
+% calculate singular values of Y
+Y = [iy, xp];
+ysv = svd(Y);
+
+% scale singular values to percentage
+ysv_scaled = 100 * ysv ./ sum(ysv)
+bar(ysv_scaled);
+
+% select n principal components above a threshold of 0.1% 
+thres = 0.1;
+n = sum(ysv_scaled > 0.1) / 2
+% n = 3 (6 singular values) covers about 99.97% of all components contributions
+covers = sum(ysv_scaled(1:2*n))
+
+%% in een struct laden - date: 09.05.2022
+
+parts = {'P1.mat', 'P2.mat', 'P3.mat', 'P4.mat', 'P5.mat', 'P6.mat', 'P7.mat', 'P8.mat', 'P9.mat', 'P10.mat', 'P11.mat', 'P12.mat', 'P13.mat', 'P14.mat', 'P15.mat', 'P16.mat', 'P17.mat'} ;  
+for m = numel(parts):-1:1
+    S(m,1) = load(parts{m}) ; 
+end 
+
+for i = 1:1:17 %hoe run je iets tot het punt dat het niet meer bestaat - else statement?
+    load(sprintf('%s%d%s','P',i,'.mat'))
+end  
+%% Overig functie voor fit - date:05.05.22
+% x  = linspace(1,5,2000)' ; 
+% y  = P1((1:2000),1) ; 
+
+%% Curvefit oud - date:05.05.22
+% lifetime_skin_2Hz_new = zeros(1,size(lifetime_in,2));
+% lifetime_skin_2Hz_input = zeros(1,size(lifetime_in,2));
+
+% onefit = fittype('a*exp(b.*x)+c') ;
+% twofit = fittype('a*exp(b.*x)+c*exp(d.*x)+e') ;
+% threefit = fittype('a*exp(b.*x)+c*exp(d.*x)+e*exp(f.*x)+g') ; 
+% x = [1:1:4000]'; % de tijd / hoeveelheid samples 
+% 
+% for Pindex = [1:1:15] %het aantal lifetimes/exponenten dat te verkrijgen is
+% 
+%     y = P1(:,Pindex);
+% %     fitCurve = fit(x,y,fourfit,'StartPoint',[1/lifetime_in(Pindex)]);
+%     
+%     f0 = fit(x,y,onefit,'StartPoint',[[ones(size(x)), -exp(-x)]\y; 1]);
+
+%     figure(6)
+%     plot(fitCurve, x, y)
+%     title('fit on combined signal')
+    
+    % determining lifetime
+%     lifetime_skin_2Hz = coeffvalues(fitCurve);
+%     lifetime_skin_2Hz_new(Pindex) = 1/lifetime_skin_2Hz(1);
+%     
+%     lifetime_input = lifetime_in(lifetimeNumber);
+%     lifetime_skin_2Hz_input(lifetimeNumber) = lifetime_input;
+%end
+
+%% Fit data - SLM toolbox - date:05.05.22
+% Cubic Hermite Spline fit. Coefficients are double the amount of the
+% number of knots present and slm.stats shows several stats as to GoF
+% (goodness of fit). 
+
+% % NB: Fit to mean or fit to seperate measurements and take mean of fits?
+% 
+% slmmeanP8 = slmengine(x',meanP8(1:2000,1),'plot','on','knots', ...  %use slm to fit the MEAN with 8 knots, the rest are standard and can also be removed (i left them here to change and optimize)
+%     [0 10 20 30 40 60 200 2000],'increasing','on', ...
+%     'leftslope',0,'rightslope',0) ; 
+%% Retrieve coefficients - SLM toolbox - date:05.05.22
+
+coefP8 = slmmeanP8.coef;                % retrieve coefficients belonging to the data function fit. 
+RMSEP8 = slmmeanP8.stats.RMSE ;
+R2P8 = slmmeanP8.stats.R2 ; 
+ErrorRangeP8 = slmmeanP8.stats.ErrorRange ; 
+
+%% Normalization of data - date:05.05.22
+% normalize function: MM used mean / max manual normalization opposed to
+% function. Normalization can be used when all objects are plotten together to do shape analysis 
+
+% slmmean = slmengine(x',meanP8(1:2000,1),'plot','on','knots', ...
+%     [0 45 90 200 2000],'increasing','on', ...
+%     'leftslope',0,'rightslope',0) ; 
+% slmmean.stats 
+
+% y = meanP8(1:2000,1) ; 
+% slmmean = slmengine(y, x, 'plot','on','knots',9,'incr','on') ; 
+
+%% Correction of data - date:05.05.22
+correction = mean(xmean(end-4:end));
+xmeancorr = xmean - correction ;
+
+%differentiaal correctie
+vdiff = diff([drift;0])/dt;
+adiff = diff([vdiff;0])/dt;
+%
+dt  = linspace(1,4000)' ;
+vdiff = diff([meanP1;0])/dt;
+adiff = diff([vdiff;0])/dt;
+
+%% Vector - date:05.05.22
+files = [P1 P2 P3 P4 P5 P6 P7 P8 P9 P10 P11 P12 P13 P14 P15 P16 P17] ;
+%% Plot data - date:05.05.22
+
+figure (1)
+% subplot(2,1,1)
+x = linspace(1,2000,2000) ;
+for j = 1:1:15
+    plot(x,P17(1:2000,j)) 
+    hold on
+end 
+% subplot(2,1,2)                % also plot mean 
+% plot(x,meanP8(1:2000,1)) ;
+
+
+
