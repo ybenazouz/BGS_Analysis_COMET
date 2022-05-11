@@ -48,3 +48,33 @@ REFERENCES (for myself)
 Algorthms fit sum: https://math.stackexchange.com/questions/1428566/fit-sum-of-exponentials/3808325#3808325
 
 Exponential fit error: https://nl.mathworks.com/matlabcentral/answers/298152-exp-fit-error-inf-computed-by-model-function-fitting-cannot-continue-try-using-or-tightening-uppe
+
+STEPS
+
+%% Load .mat files into cell 
+% Make sure you run the GetandSave.m file before running this file. 
+% Open file directory with all P.mat files before loading 
+
+% dir PATCHES/SUBJECT_3 >> dir gebruiken zodat je de bestanden niet hoeft
+% te openen? 
+%% Data Smoothing 
+% The function DataPrep will first apply an sgolay filter to flatten the
+% data and then all measurements per part will be averaged. This will be
+% done only to the first 2000 samples (opposed to 4000), as there is little
+% use in evaluating after the 2000 point. 
+%% Fit exponential fit to the signals 
+% hier evt nog een keuze of je een figuur wil zien toevoegen en evt nog dat
+% de lifetimeDF het aantal gebruikt dat uit DFexpfit komt gebruikt. 
+
+%% Load .mat files into cell 
+% Make sure you run the GetandSave.m file before running this file. 
+% Open file directory with all P.mat files before loading 
+
+%% Data Smoothing 
+% The function DataPrep will first apply an sgolay filter to flatten the
+% data and then all measurements per part will be averaged. This will be
+% done only to the first 2000 samples (opposed to 4000), as there is little
+% use in evaluating after the 2000 point. 
+%% Fit exponential fit to the signals 
+% hier evt nog een keuze of je een figuur wil zien toevoegen en evt nog dat
+% de lifetimeDF het aantal gebruikt dat uit DFexpfit komt gebruikt. 

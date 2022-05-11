@@ -7,7 +7,7 @@ function [coeff,x] = LifetimeDF(y)
 x  = linspace(1,5,2000)' ; % because exponentials don't do well with large numbers, we are taking our range within a lower number. 
 y  = log(y((1:2000),1)) ; % a log distribution seems more fitting due to the shape of the data
 
-% calculate integrals
+% calculate integrals (cumulative)
 iy1 = cumtrapz(x, y);
 
 % get exponentials lambdas
@@ -24,7 +24,9 @@ tau = 1/lambdas ;
 
 % get integral intensity 
 % integral = trapz(y) ; 
+% fit polynomial n = 2 
+p = polyfit(x,iy1,2) ; % willen we ook struct S met error values? 
 
 % create struct with all values 
-coeff = struct('lambda', {lambdas}, 'multipliers', {P}, 'taus',{tau}, 'integral', {iy1}) ; 
+coeff = struct('lambda', {lambdas}, 'multipliers', {P}, 'taus',{tau}, 'integral', {iy1}, 'poly', {p}) ; 
 end

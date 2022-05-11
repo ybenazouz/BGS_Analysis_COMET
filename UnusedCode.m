@@ -1,6 +1,44 @@
 % Code that might still be usefull later on. 
 % Serves only as registration and to not lose them. 
 
+%% O2norm plotten amplituden - date: 11.09.2022
+% Dit kan handiger 
+t = 1:1:8 ; % time axis
+plot(t, max)
+ylabel('Intensity [V]')
+xlabel('Measurements after application')
+title('Intensity of fluorescence signal at 630nm and 670nm in subject #3')
+
+%% README - date: 11.09.2022
+% P = patch 
+% S = subject
+% O2norm = regular oxygen pressure, no pressure is applied to the skin with the COMET head. 
+% O20 = hypoxic tissue, oxygen pressure is reduced to approximately zero by applying pressure with the COMET head.  
+% NL = New Laser 
+
+% Before running, open folder #3 for subject 3. 
+%% O2norm calculation median of maxima - date: 11.09.2022
+% 630nm  
+maxP1M1_O2norm_630nm = -(median(P1M1_O2norm_630nm(2,:)));
+maxP1M2_O2norm_630nm = -(median(P1M2_O2norm_630nm(2,:)));
+maxP1M3_O2norm_630nm = -(median(P1M3_O2norm_630nm(2,:)));
+maxP1M4_O2norm_630nm = -(median(P1M4_O2norm_630nm(2,:)));
+maxP1M5_O2norm_630nm = -(median(P1M5_O2norm_630nm(2,:)));
+maxP1M6_O2norm_630nm = -(median(P1M6_O2norm_630nm(2,:)));
+maxP1M7_O2norm_630nm = -(median(P1M7_O2norm_630nm(2,:)));
+maxP1M8_O2norm_630nm = -(median(P1M8_O2norm_630nm(2,:)));
+
+% 670nm 
+maxP1M1_O2norm_670nm = -(median(P1M1_O2norm_670nm(2,:)));
+maxP1M2_O2norm_670nm = -(median(P1M2_O2norm_670nm(2,:)));
+maxP1M3_O2norm_670nm = -(median(P1M3_O2norm_670nm(2,:)));
+maxP1M4_O2norm_670nm = -(median(P1M4_O2norm_670nm(2,:)));
+maxP1M5_O2norm_670nm = -(median(P1M5_O2norm_670nm(2,:)));
+maxP1M6_O2norm_670nm = -(median(P1M6_O2norm_670nm(2,:)));
+maxP1M7_O2norm_670nm = -(median(P1M7_O2norm_670nm(2,:)));
+maxP1M8_O2norm_670nm = -(median(P1M8_O2norm_670nm(2,:)));
+
+
 %% integral of cuntion? - date: 09.05.2022
 integral = cell(1,N) ;
 fun = @(x,P1,P2,lambdas) P(1) + P(2)*exp(lambdas*x) ; 

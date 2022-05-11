@@ -1,76 +1,53 @@
-%% ALA-exp - data preperation
-% april 2022    M. Schoenmakers
-
-%% README
-% P = patch 
-% S = subject
-% O2norm = regular oxygen pressure, no pressure is applied to the skin with the COMET head. 
-% O20 = hypoxic tissue, oxygen pressure is reduced to approximately zero by applying pressure with the COMET head.  
-% NL = New Laser 
-
-% Before running, open folder #3 for subject 3. 
+%% TM2 Internship - COMET 
+% Y. (Yasmin) Ben Azouz 
+% Version 11.05.2022
+% Document skin, parts and SOK. 
 
 clear
 close all
-%% Finding median of maxima 
-% This maximum assumes that the second measurement is the maximum value for
-% eacht measurement (?). Can we not first correct the data and then use
-% function max afterwards? 
+%% COMET PARTS EXPERIMENT NEW LASER 
+% Fill in amount of parts / files 
+N = 17 ; 
+%% 
+parts = cell(1,N) ;
+smoothparts = cell(1,N) ; 
+coeffparts = cell(1,N) ; 
 
-%% O2norm 
-% 630nm  
-maxP1M1_O2norm_630nm = -(median(P1M1_O2norm_630nm(2,:)));
-maxP1M2_O2norm_630nm = -(median(P1M2_O2norm_630nm(2,:)));
-maxP1M3_O2norm_630nm = -(median(P1M3_O2norm_630nm(2,:)));
-maxP1M4_O2norm_630nm = -(median(P1M4_O2norm_630nm(2,:)));
-maxP1M5_O2norm_630nm = -(median(P1M5_O2norm_630nm(2,:)));
-maxP1M6_O2norm_630nm = -(median(P1M6_O2norm_630nm(2,:)));
-maxP1M7_O2norm_630nm = -(median(P1M7_O2norm_630nm(2,:)));
-maxP1M8_O2norm_630nm = -(median(P1M8_O2norm_630nm(2,:)));
+for j = 1:N  
+    file = sprintf('P%d',j);
+    parts(j) = struct2cell(load(file));
+    smoothparts(j) = {DataPrep(parts{j})} ; 
+    DFexpfit(smoothparts{j})
+    coeffparts(j) = {LifetimeDF(smoothparts{j})} ;
+end
+%% tabel? 
+% fig = uifigure;
+% uit = uitable(fig,'coeffparts',coeffparts);
 
-% 670nm 
-maxP1M1_O2norm_670nm = -(median(P1M1_O2norm_670nm(2,:)));
-maxP1M2_O2norm_670nm = -(median(P1M2_O2norm_670nm(2,:)));
-maxP1M3_O2norm_670nm = -(median(P1M3_O2norm_670nm(2,:)));
-maxP1M4_O2norm_670nm = -(median(P1M4_O2norm_670nm(2,:)));
-maxP1M5_O2norm_670nm = -(median(P1M5_O2norm_670nm(2,:)));
-maxP1M6_O2norm_670nm = -(median(P1M6_O2norm_670nm(2,:)));
-maxP1M7_O2norm_670nm = -(median(P1M7_O2norm_670nm(2,:)));
-maxP1M8_O2norm_670nm = -(median(P1M8_O2norm_670nm(2,:)));
+%% ALA PATCHES EXPERIMENT NEW LASER
+% Fill in amount of measurements for patch one 
+M = 8  ; 
 
-%% O20 
+%% Load data, smooth data, fit data
+patch_1 = cell(1,M);
+smoothpatch_1 = cell(1,M) ;
+max = zeros(1,M) ; 
+coeffpatch_1 = cell(1,M) ;
 
-%% Plotting intensities of 630 and 670 nm data 
-% Create vector with all maximum intensities and a time axis
-%% O2norm 
-maxP1MALL_O2norm_630nm = [maxP1M1_O2norm_630nm maxP1M2_O2norm_630nm maxP1M3_O2norm_630nm maxP1M4_O2norm_630nm 
-    maxP1M5_O2norm_630nm  maxP1M6_O2norm_630nm maxP1M7_O2norm_630nm maxP1M8_O2norm_630nm ] ; %630nm vector
-maxP1MALL_O2norm_670nm = [maxP1M1_O2norm_670nm maxP1M2_O2norm_670nm maxP1M3_O2norm_670nm maxP1M4_O2norm_670nm 
-    maxP1M5_O2norm_670nm  maxP1M6_O2norm_670nm maxP1M7_O2norm_670nm maxP1M8_O2norm_670nm ] ; %670nm vector
+for k = 1:M
+   file = sprintf('S3_Patch1M%d_O2norm_630nm',k);
+   patch_1(k) = struct2cell(load(file));
+   smoothpatch_1(k) = {DataPrep(patch_1{k})} ; % smooth / correct data 
+   max(1,k) = smoothpatch_1{k}.max  ; % retrieve maxima 
+   DFexpfit(smoothpatch_1{k}.smooth) % show best number of terms for fit 
+   coeffpatch_1(k) = {LifetimeDF(smoothpatch_1{k}.smooth)} ; % fit exponential fit to the signals 
+end
 
-t = 3:1:14 ; % time axis
+%% Calculate ratios (MM)
+ratio630670_O2norm =nan(size(Patch1_O2norm_670nm_max));
+ratio630670_O20 =nan(size(Patch1_O20_670nm_max));
 
-figure(1)
-subplot(2,1,1) % maximum intensities at 630nm at different measurements 
-plot(t, maxP1MALL_O2norm_630nm)
-xlim([3 14])
-ylabel('Intensity [V]')
-xlabel('Measurements after application')
-title('Intensity of fluorescence signal at 630nm in subject #3')
-
-subplot(2,1,2) % maximum intensities at 670nm at different measurements 
-plot(t, maxP1MALL_O2norm_670nm)
-xlim([3 14])
-ylabel('Intensity [V]')
-xlabel('Measurements after application')
-title('Intensity of fluorescence signal at 670nm in subject #3')
-
-figure(2) % 630nm and 670nm together at different measurements 
-plot(t, maxP1MALL_O2norm_630nm, t, maxP1MALL_O2norm_670nm)
-xlim([3 14])
-legend('630nm', '670nm') 
-ylabel('Intensity [V]')
-xlabel('Measurements after application')
-title('Intensity of fluorescence signal at 630nm and 670nm in subject #3')
-
-%% O20
+for i = 1: size(Patch1_O2norm_670nm_max,2)
+ratio630670_O2norm(i) = Patch1_O2norm_670nm_max(i)/Patch1_O2norm_630nm_max(i);
+ratio630670_O20(i) = Patch1_O20_670nm_max(i)/Patch1_O20_630nm_max(i);
+end

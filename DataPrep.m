@@ -1,4 +1,4 @@
-function [sgmean] = DataPrep(y)
+function [structure] = DataPrep(y)
 % DATAPREP 
 % We want to smooth out the data. 
 
@@ -16,6 +16,13 @@ for s = 1:n
 end
 
 % Average over all measurements >> minimize the signal-noise ratio
-sgmean = mean(sg,2);  
+sgmean = -mean(sg,2);  
+
+% Calculate maximum of measurement (dit doen binnen de eerste range of
+% er van uit gaan dat er geen grote outliers meer zijn? correctie is
+% toegepast) 
+sgmax = max(sgmean) ; 
+
+structure = struct('smooth', {sgmean}, 'max', {sgmax}) ; 
 end
 
