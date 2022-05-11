@@ -1,5 +1,5 @@
 %% TM2 Internship - COMET 
-% Y. (Yasmin) Ben Azouz 
+% Y. (Yasmin) Ben Azouz and M. (Myrte) Schoemakers
 % Version 11.05.2022
 % Document skin, parts and SOK. 
 
@@ -20,10 +20,6 @@ for j = 1:N
     DFexpfit(smoothparts{j})
     coeffparts(j) = {LifetimeDF(smoothparts{j})} ;
 end
-%% tabel? 
-% fig = uifigure;
-% uit = uitable(fig,'coeffparts',coeffparts);
-
 %% ALA PATCHES EXPERIMENT NEW LASER
 % Fill in amount of measurements for patch one 
 M = 8  ; 
