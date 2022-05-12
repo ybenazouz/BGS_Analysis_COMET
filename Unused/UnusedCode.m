@@ -1,6 +1,92 @@
 % Code that might still be usefull later on. 
 % Serves only as registration and to not lose them. 
 
+%% Loop for loading in GetandSave.m - date: 11.09.2022
+% Het probleem is hier dat d en dd op dezelfde hoogte in de for loop moeten
+% komen te staan 
+
+% poging 5 
+for j = 1:1:9 
+    for i = 6:-1:2 
+         = xlsread(d(j), i, 'A2:A4001');
+    end 
+end 
+v = [S1_Patch1M1_O2norm_630nm, S1_Patch1M2_O2norm_630nm, ...
+    S1_Patch1M3_O2norm_630nm, S1_Patch1M4_O2norm_630nm, ...
+    S1_Patch1M5_O2norm_630nm, S1_Patch1M6_O2norm_630nm, ...
+    S1_Patch1M7_O2norm_630nm, S1_Patch1M8_O2norm_630nm, ...
+    S1_Patch1M9_O2norm_630nm ] ; 
+
+% vierde keer, ook dit werkt niet (ook niet met direct ervoor) 
+D = 2 ; % amount of measurements done 
+for ii = 1:1:D
+    for d = ["NL_MM_0940uur_meting1_!", "NL_MM_1101uur_sticker2_meting2"]
+        for i = 2:1:6
+            sprintf('S1_Patch2dM%d_O2norm_630',ii) = var
+            var(:,i-1) = xlsread((sprintf('%s',d)), i, 'A2:A4001');
+            %sprintf('S1_Patch2dM%d_O2norm_670',ii) = xlsread((sprintf('%s',d)), i, 'B2:B4001');
+        end 
+    end 
+end
+
+% oplossing: string maken met de hele bestandsnamen, anders is het denk ik
+% onmogelijk. 
+
+% derde keer 
+for d = ["0840", "1001", "1055", "1156", "1248", "1355", "1443", "1547","1631"] 
+    for dd = 1:1:9
+        names = sprintf('NL_%duur_MM_sticker1_meting%d.xlsx',d,dd) ; 
+    end 
+end 
+
+%% 
+for ii = 1:1:9 
+    for d = ["0840", "1001", "1055", "1156", "1248", "1355", "1443", "1547","1631"]
+        filename = sprintf('NL_%suur_MM_sticker1_meting',d ) ; 
+    end 
+    for dd = 1:1:9
+        for i = 2:1:6
+            varname = sprintf('S1_Patch1dM%d_O2norm_360',ii) ;
+            varname = xlsread((sprintf(''filename'%d.xlsx',dd)), i, 'A2:A4001'); 
+        end 
+    end 
+end
+
+% tweede keer 
+
+for ii = 1:1:9 
+    for d = ["0840", "1001", "1055", "1156", "1248", "1355", "1443", "1547","1631"]
+        for i = 2:1:6
+            varname = sprintf('S1_Patch1dM%d_O2norm_360',ii) ;
+            varname = xlsread((sprintf('NL_%suur_MM_sticker1_meting%d.xlsx',d,ii)), i, 'A2:A4001'); 
+        end 
+    end
+end 
+
+% eeste keer 
+for ii = 1:1:9 
+    for i = 2:1:6
+        varname = sprintf('S1_Patch1dM%d_O2norm_360',ii) ;
+        for d = ["0840", "1001", "1055", "1156", "1248", "1355", "1443", "1547","1631"] 
+            file = sprintf('NL_%suur_MM_sticker1_meting.xlsx',d
+        for dd = 1:1:9
+                varname = xlsread((sprintf('NL_%suur_MM_sticker1_meting%d.xlsx',d,dd)), i, 'A2:A4001');
+            end 
+        end 
+    end
+end 
+
+%% Loop for saving in GetandSave.m - date: 11.09.2022
+for iii = 1:1:12 
+    for ii = ["630nm", "670nm"] 
+        for i = 1:1:9
+            filename = sprintf('S2_Patch%dM%d_O2norm_%s',iii,i,ii) ;
+            if exist ('filename', 'var') == 1
+                save(filename) 
+            end 
+        end 
+    end 
+end
 %% O2norm plotten amplituden - date: 11.09.2022
 % Dit kan handiger 
 t = 1:1:8 ; % time axis
