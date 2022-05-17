@@ -1,6 +1,72 @@
+%% Unused Code COMET - TM2
+% Y. (Yasmin) Ben Azouz - version: 13.05.2022
 % Code that might still be usefull later on. 
 % Serves only as registration and to not lose them. 
+%% SOK no longer needed - date: 16.05.2022
 
+j = 6 ; % number of the sok you want to fit 
+y = smoothsok{j}.smooth ; 
+
+options = optimoptions('lsqcurvefit','Algorithm','levenberg-marquardt',...
+    'Display', 'iter', 'MaxFunctionEvaluations', 1000); 
+%     'StepTolerance', 1e-23,'OptimalityTolerance', 1e-16,...
+%     'FunctionTolerance', 1e-16, 'MaxFunctionEvaluations', 1000);
+lb = [] ; 
+ub = [] ; 
+ydata = y((1:700),1) ; 
+xdata  = linspace(1,5,700)' ;
+
+%% SOK - not correct - DATE: 16.05.2022
+% get integral intensity 
+% integral = trapz(y) ; 
+% fit polynomial n = 2 
+% p = polyfit(x,iy1,2) ; % willen we ook struct S met error values? 
+
+%% plot general mono and bi exponential fit - date: 16.05.2022
+y1 = exp(-1.2*xdata)+exp((2*-0.3)*xdata); 
+y2 = exp(-1.2*xdata) ; 
+figure
+plot(xdata,y1)
+hold on
+plot(xdata,y2)
+
+%% SOK - Load data - date: 13.05.2022
+% N = 3 ; % concentrations measured 
+% sok = struct("25",[],"200",[],'400',[]) ;
+% for j = 1:N 
+%     for i = ["25", "200", "400"] 
+%         if exist(sprintf('Sok1__ppix%s_515nm_630nm',i),'var') == 1  
+%             matfile = sprintf('Sok1__ppix%s_515nm_630nm',i) ; 
+%             sok.nm630 = struct2cell(load(matfile)) ;
+%         elseif exist(sprintf('Sok1__ppix%s_515nm_670nm',i),'var') == 1 
+%             matfile = sprintf('Sok1__ppix%s_515nm_630nm.mat',i) ; 
+%             sok.nm670 = struct2cell(load(matfile)) ;
+%         else 
+%         continue 
+%         end 
+%     end 
+% end 
+%% Load data easy - SOK (toch nie zo easy) - date: 13.05.2022
+folder = fileparts(which(mfilename)); 
+addpath(genpath(folder));
+
+N = 3 ; % concentrations measured 
+% Maak dan dus eerst een struct per concentratie met cellen van 4000x22 
+% (bv), laad de concentratie structs dan in het stuct met de golflengte
+% (dit is het grote sok struct). 
+
+% conc_25 = cell(4000,
+sok = struct('nm630',cell(1,3),'nm670',cell(1,3));
+
+% matfile630 = [ "Sok1__ppix25_515nm_630nm.mat", "Sok1__ppix200_515nm_630nm.mat",...
+%     "Sok1__ppix400_515nm_630nm.mat"] ; 
+% matfile670 = [ "Sok1__ppix25_515nm_670nm.mat", "Sok1__ppix200_515nm_670nm.mat",...
+%     "Sok1__ppix400_515nm_670nm.mat"] ; 
+% 
+% for j = 1:N
+%     sok.nm630(N) = struct2cell(load(matfile630(N))) ;
+%     sok.nm670(N) = struct2cell(load(matfile670(N))) ; 
+% end 
 %% Loop for loading in GetandSave.m - date: 11.09.2022
 % Het probleem is hier dat d en dd op dezelfde hoogte in de for loop moeten
 % komen te staan 

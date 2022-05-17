@@ -1282,135 +1282,42 @@ for i = 2:1:6
     S3_Patch12_515nm_O20_670nm(:,i-1) = xlsread(f_515(24), i, 'B2:B4001');
 end
 
+%% Save 515 nm
+for iii = 1:1:12 
+    for ii = ["630nm", "670nm"] 
+        for kk = ["norm", "0"] 
+            if exist(sprintf('S3_Patch%d_515nm_O2%s_%s',iii,kk,ii),'var') == 1
+               filename = sprintf('S3_Patch%d_515nm_O2%s_%s',iii,kk,ii) ; 
+               save(filename) 
+            else
+                exist(sprintf('S3_Patch%d_515nm_O2%s_%s',iii,kk,ii),'var') == 0 ; 
+                continue 
+            end 
+        end 
+    end 
+end
+%% Save 
+for iii = 1:1:12 
+    for ii = ["630nm", "670nm"] 
+        for kk = ["norm", "0"] 
+            for i = 1:1:9
+                if exist(sprintf('S3_Patch%dM%d_O2%s_%s',iii,i,kk,ii),'var') == 1
+                   filename = sprintf('S3_Patch%dM%d_O2%s_%s',iii,i,kk,ii) ; 
+                   save(filename) 
+                elseif exist(sprintf('S3_BGSM%d_O2%s_%s',i,kk,ii),'var') == 1 
+                   filename = sprintf('S3_BGSM%d_O2%s_%s',i,kk,ii) ; 
+                   save(filename) 
+                else
+                    exist(sprintf('S3_Patch%dM%d_O2%s_%s',iii,i,kk,ii),'var') == 0 ; 
+                    continue 
+                end 
+            end
+        end 
+    end 
+end
+
+
 %% SKIN DATA - subject 4
-
-f_1 = ["NL_0840uur_MM_sticker1_meting1.xlsx", "NL_1001uur_MM_sticker1_meting2.xlsx",...
-    "NL_1055uur_MM_sticker1_meting3.xlsx", "NL_1156uur_MM_sticker1_meting4.xlsx",...
-    "NL_1248uur_MM_sticker1_meting5.xlsx", "NL_1355uur_MM_sticker1_meting6.xlsx",...
-    "NL_1443uur_MM_sticker1_meting7.xlsx", "NL_1547uur_MM_sticker1_meting8.xlsx",...
-    "NL_1631uur_MM_sticker1_meting9.xlsx"] ; 
-
-S1_Patch1M1_O2norm_630nm = zeros(4000,5);
-S1_Patch1M2_O2norm_630nm = zeros(4000,5);
-S1_Patch1M3_O2norm_630nm = zeros(4000,5);
-S1_Patch1M4_O2norm_630nm = zeros(4000,5);
-S1_Patch1M5_O2norm_630nm = zeros(4000,5);
-S1_Patch1M6_O2norm_630nm = zeros(4000,5);
-S1_Patch1M7_O2norm_630nm = zeros(4000,5);
-S1_Patch1M8_O2norm_630nm = zeros(4000,5);
-S1_Patch1M9_O2norm_630nm = zeros(4000,5);
-
-for i = 2:1:6
-    S1_Patch1M1_O2norm_630nm = xlsread(f_1(1), i, 'A2:A4001');
-    S1_Patch1M2_O2norm_630nm = xlsread(f_1(2), i, 'A2:A4001');
-    S1_Patch1M3_O2norm_630nm = xlsread(f_1(3), i, 'A2:A4001');
-    S1_Patch1M4_O2norm_630nm = xlsread(f_1(4), i, 'A2:A4001');
-    S1_Patch1M5_O2norm_630nm = xlsread(f_1(5), i, 'A2:A4001');
-    S1_Patch1M6_O2norm_630nm = xlsread(f_1(6), i, 'A2:A4001');
-    S1_Patch1M7_O2norm_630nm = xlsread(f_1(7), i, 'A2:A4001');
-    S1_Patch1M8_O2norm_630nm = xlsread(f_1(8), i, 'A2:A4001');
-    S1_Patch1M9_O2norm_630nm = xlsread(f_1(9), i, 'A2:A4001');
-end 
-S1_Patch1M1_O2norm_670nm = zeros(4000,5);
-S1_Patch1M2_O2norm_670nm = zeros(4000,5);
-S1_Patch1M3_O2norm_670nm = zeros(4000,5);
-S1_Patch1M4_O2norm_670nm = zeros(4000,5);
-S1_Patch1M5_O2norm_670nm = zeros(4000,5);
-S1_Patch1M6_O2norm_670nm = zeros(4000,5);
-S1_Patch1M7_O2norm_670nm = zeros(4000,5);
-S1_Patch1M8_O2norm_670nm = zeros(4000,5);
-S1_Patch1M9_O2norm_670nm = zeros(4000,5);
-for i = 2:1:6
-    S1_Patch1M1_O2norm_670nm = xlsread(f_1(1), i, 'B2:B4001');
-    S1_Patch1M2_O2norm_670nm = xlsread(f_1(2), i, 'B2:B4001');
-    S1_Patch1M3_O2norm_670nm = xlsread(f_1(3), i, 'B2:B4001');
-    S1_Patch1M4_O2norm_670nm = xlsread(f_1(4), i, 'B2:B4001');
-    S1_Patch1M5_O2norm_670nm = xlsread(f_1(5), i, 'B2:B4001');
-    S1_Patch1M6_O2norm_670nm = xlsread(f_1(6), i, 'B2:B4001');
-    S1_Patch1M7_O2norm_670nm = xlsread(f_1(7), i, 'B2:B4001');
-    S1_Patch1M8_O2norm_670nm = xlsread(f_1(8), i, 'B2:B4001');
-    S1_Patch1M9_O2norm_670nm = xlsread(f_1(9), i, 'B2:B4001');
-end
-
-%% patch 2 
-
-S1_Patch2M1_O2norm_630nm = zeros(4000,5);
-S1_Patch2M2_O2norm_630nm = zeros(4000,5);
-S1_Patch2M1_O2norm_670nm = zeros(4000,5);
-S1_Patch2M2_O2norm_670nm = zeros(4000,5);
-
-f_2 = ["NL_MM_0940uur_meting1_!", "NL_MM_1101uur_sticker2_meting2"] ; 
-for i = 2:1:6
-    S1_Patch2M1_O2norm_630nm(:,i-1) = xlsread(f_2(1), i, 'A2:A4001');
-    S1_Patch2M2_O2norm_630nm(:,i-1) = xlsread(f_2(2), i, 'A2:A4001');
-    S1_Patch2M1_O2norm_670nm(:,i-1) = xlsread(f_2(1), i, 'B2:B4001');
-    S1_Patch2M2_O2norm_670nm(:,i-1) = xlsread(f_2(2), i, 'B2:B4001');
-end
-
-%% patch 3
-
-f_3 = ["NL_1037uur_MM_sticker3_meting1.xlsx", "NL_1202uur_MM_sticker3_meting2.xlsx",...
-    "NL_1403uur_MM_sticker3_meting3.xlsx", "NL_1553uur_MM_sticker3_meting4.xlsx"] ; 
-
-S1_Patch3M1_O2norm_630nm = zeros(4000,5);
-S1_Patch3M2_O2norm_630nm = zeros(4000,5);
-S1_Patch3M3_O2norm_630nm = zeros(4000,5);
-S1_Patch3M4_O2norm_630nm = zeros(4000,5);
-for i = 2:1:6
-    S1_Patch3M1_O2norm_630nm(:,i-1) = xlsread(f_3(1), i, 'A2:A4001');
-    S1_Patch3M2_O2norm_630nm(:,i-1) = xlsread(f_3(2), i, 'A2:A4001');
-    S1_Patch3M3_O2norm_630nm(:,i-1) = xlsread(f_3(3), i, 'A2:A4001');
-    S1_Patch3M4_O2norm_630nm(:,i-1) = xlsread(f_3(4), i, 'A2:A4001');
-end
-
-S1_Patch3M1_O2norm_670nm = zeros(4000,5);
-S1_Patch3M2_O2norm_670nm = zeros(4000,5);
-S1_Patch3M3_O2norm_670nm = zeros(4000,5);
-S1_Patch3M4_O2norm_670nm = zeros(4000,5);
-for i = 2:1:6
-    S1_Patch3M1_O2norm_670nm(:,i-1) = xlsread(f_3(1), i, 'B2:B4001');
-    S1_Patch3M2_O2norm_670nm(:,i-1) = xlsread(f_3(2), i, 'B2:B4001');
-    S1_Patch3M3_O2norm_670nm(:,i-1) = xlsread(f_3(3), i, 'B2:B4001');
-    S1_Patch3M4_O2norm_670nm(:,i-1) = xlsread(f_3(4), i, 'B2:B4001');
-end
-%% patch 4 
-f_4 = ["NL_1140uur_MM_sticker4_meting1.xlsx", "NL_1254uur_MM_sticker4_meting2.xlsx",...
-    "NL_1457uur_MM_sticker4_meting3.xlsx", "NL_1642uur_MM_sticker4_meting4.xlsx"] ; 
-
-S1_Patch4M1_O2norm_630nm = zeros(4000,5);
-S1_Patch4M2_O2norm_630nm = zeros(4000,5);
-S1_Patch4M3_O2norm_630nm = zeros(4000,5);
-S1_Patch4M4_O2norm_630nm = zeros(4000,5);
-for i = 2:1:6
-    S1_Patch4M1_O2norm_630nm(:,i-1) = xlsread(f_4(1), i, 'A2:A4001');
-    S1_Patch4M2_O2norm_630nm(:,i-1) = xlsread(f_4(2), i, 'A2:A4001');
-    S1_Patch4M3_O2norm_630nm(:,i-1) = xlsread(f_4(3), i, 'A2:A4001');
-    S1_Patch4M4_O2norm_630nm(:,i-1) = xlsread(f_4(4), i, 'A2:A4001');
-end
-
-S1_Patch4M1_O2norm_670nm = zeros(4000,5);
-S1_Patch4M2_O2norm_670nm = zeros(4000,5);
-S1_Patch4M3_O2norm_670nm = zeros(4000,5);
-S1_Patch4M4_O2norm_670nm = zeros(4000,5);
-for i = 2:1:6
-    S1_Patch4M1_O2norm_670nm(:,i-1) = xlsread(f_4(1), i, 'B2:B4001');
-    S1_Patch4M2_O2norm_670nm(:,i-1) = xlsread(f_4(2), i, 'B2:B4001');
-    S1_Patch4M3_O2norm_670nm(:,i-1) = xlsread(f_4(3), i, 'B2:B4001');
-    S1_Patch4M4_O2norm_670nm(:,i-1) = xlsread(f_4(4), i, 'B2:B4001');
-end
-%% patch 5 
-f_5 = ["NL_MM_0948_sticker5_meting1!.xlsx", "NL_MM_1105uur_sticker5_meting2.xlsx"] ; 
-
-S1_Patch5M1_O2norm_630nm = zeros(4000,5); 
-S1_Patch5M2_O2norm_630nm = zeros(4000,5); 
-S1_Patch5M1_O2norm_670nm = zeros(4000,5); 
-S1_Patch5M2_O2norm_670nm = zeros(4000,5);
-for i = 2:1:6
-    S1_Patch5M1_O2norm_630nm(:,i-1) = xlsread(f_5(1), i, 'A2:A4001');
-    S1_Patch5M2_O2norm_630nm(:,i-1) = xlsread(f_5(2), i, 'A2:A4001');
-    S1_Patch5M1_O2norm_670nm(:,i-1) = xlsread(f_5(1), i, 'B2:B4001');
-    S1_Patch5M2_O2norm_670nm(:,i-1) = xlsread(f_5(2), i, 'B2:B4001');
-end
 %% patch 6 
 f_6 = ["S6_M1_1039_O2norm.xlsx", "S6_M2_1147_O2norm.xlsx",...
     "S6_M1_1039_O20.xlsx", "S6_M2_1147_O20.xlsx"] ;   
@@ -1437,127 +1344,4 @@ for i = 2:1:6
     S1_Patch6M2_O2norm_630nm(:,i-1) = xlsread(f_6(4), i, 'A2:A4001');
     S1_Patch6M1_O2norm_670nm(:,i-1) = xlsread(f_6(3), i, 'B2:B4001');
     S1_Patch6M2_O2norm_670nm(:,i-1) = xlsread(f_6(4), i, 'B2:B4001');
-end
-%% patch 7
-f_7 = ["NL_1145uur_MM_sticker7_meting1.xlsx", "NL_1300uur_MM_sticker7_meting2.xlsx"];  
-
-S1_Patch7M1_O2norm_630nm = zeros(4000,5); 
-S1_Patch7M2_O2norm_630nm = zeros(4000,5); 
-S1_Patch7M1_O2norm_670nm = zeros(4000,5); 
-S1_Patch7M2_O2norm_670nm = zeros(4000,5);
-for i = 2:1:6
-    S1_Patch7M1_O2norm_630nm(:,i-1) = xlsread(f_7(1), i, 'A2:A4001');
-    S1_Patch7M2_O2norm_630nm(:,i-1) = xlsread(f_7(2), i, 'A2:A4001');
-    S1_Patch7M1_O2norm_670nm(:,i-1) = xlsread(f_7(1), i, 'B2:B4001');
-    S1_Patch7M2_O2norm_670nm(:,i-1) = xlsread(f_7(2), i, 'B2:B4001');
-end
-%% patch 8
-f_8 = ["NL_1238uur_MM_sticker8_meting1.xlsx", "NL_1406uur_MM_sticker8_meting2.xlsx"] ; 
-
-S1_Patch8M1_O2norm_630nm = zeros(4000,5);
-S1_Patch8M2_O2norm_630nm = zeros(4000,5); 
-S1_Patch8M1_O2norm_670nm = zeros(4000,5); 
-S1_Patch8M2_O2norm_670nm = zeros(4000,5);
-for i = 2:1:6
-    S1_Patch8M1_O2norm_630nm(:,i-1) = xlsread(f_8(1), i, 'A2:A4001');
-    S1_Patch8M2_O2norm_630nm(:,i-1) = xlsread(f_8(2), i, 'A2:A4001');
-    S1_Patch8M1_O2norm_670nm(:,i-1) = xlsread(f_8(1), i, 'B2:B4001');
-    S1_Patch8M2_O2norm_670nm(:,i-1) = xlsread(f_8(1), i, 'B2:B4001');
-end
-%% patch 9
-f_9 = ["NL_1346uur_MM_sticker9_meting1.xlsx", "NL_1501uur_MM_sticker9_meting2.xlsx"] ;  
-
-S1_Patch9M1_O2norm_630nm = zeros(4000,5); 
-S1_Patch9M2_O2norm_630nm = zeros(4000,5); 
-S1_Patch9M1_O2norm_670nm = zeros(4000,5); 
-S1_Patch9M2_O2norm_670nm = zeros(4000,5);
-for i = 2:1:6
-    S1_Patch9M1_O2norm_630nm(:,i-1) = xlsread(f_9(1), i, 'A2:A4001');
-    S1_Patch9M2_O2norm_630nm(:,i-1) = xlsread(f_9(2), i, 'A2:A4001');
-    S1_Patch9M1_O2norm_670nm(:,i-1) = xlsread(f_9(1), i, 'B2:B4001');
-    S1_Patch9M2_O2norm_670nm(:,i-1) = xlsread(f_9(2), i, 'B2:B4001');
-end
-
-%% patch 10
-f_10 = ["NL_1440uur_MM_sticker10_meting1.xlsx", "NL_1556uur_MM_sticker10_meting2.xlsx"] ; 
-
-S1_Patch10M1_O2norm_630nm = zeros(4000,5); 
-S1_Patch10M2_O2norm_630nm = zeros(4000,5); 
-S1_Patch10M1_O2norm_670nm = zeros(4000,5); 
-S1_Patch10M2_O2norm_670nm = zeros(4000,5);
-for i = 2:1:6
-    S1_Patch10M1_O2norm_630nm(:,i-1) = xlsread(f_10(1), i, 'A2:A4001');
-    S1_Patch10M2_O2norm_630nm(:,i-1) = xlsread(f_10(2), i, 'A2:A4001');
-    S1_Patch10M1_O2norm_670nm(:,i-1) = xlsread(f_10(1), i, 'B2:B4001');
-    S1_Patch10M2_O2norm_670nm(:,i-1) = xlsread(f_10(2), i, 'B2:B4001');
-end
-%% patch 11
-f_11 = ["NL_1538uur_MM_sticker11_meting1.xlsx", "NL_1644uur_MM_sticker11_meting2.xlsx"] ; 
-
-S1_Patch11M1_O2norm_630nm = zeros(4000,5); 
-S1_Patch11M2_O2norm_630nm = zeros(4000,5); 
-S1_Patch11M1_O2norm_670nm = zeros(4000,5); 
-S1_Patch11M2_O2norm_670nm = zeros(4000,5);
-for i = 2:1:6
-    S1_Patch11M1_O2norm_630nm(:,i-1) = xlsread(f_11(1), i, 'A2:A4001');
-    S1_Patch11M2_O2norm_630nm(:,i-1) = xlsread(f_11(2), i, 'A2:A4001');
-    S1_Patch11M1_O2norm_670nm(:,i-1) = xlsread(f_11(1), i, 'B2:B4001');
-    S1_Patch11M2_O2norm_670nm(:,i-1) = xlsread(f_11(2), i, 'B2:B4001');
-end
-%% patch 12
-f_12 = ["NL_1637uur_MM_sticker12_meting1.xlsx"];
-
-S1_Patch12M1_O2norm_630nm = zeros(4000,5); 
-S1_Patch12M1_O2norm_670nm = zeros(4000,5); 
-for i = 2:1:6
-    S1_Patch12M1_O2norm_630nm(:,i-1) = xlsread(f_12(1), i, 'A2:A4001');
-    S1_Patch12M1_O2norm_670nm(:,i-1) = xlsread(f_12(1), i, 'B2:B4001');
-end
-
-%% BGS 
-
-f_BGS = ["NL_1011uur_BGS_meting2.xlsx", "NL_1134uur_MM_BGS_meting3.xlsx",...
-    "NL_1340uur_MM_BGS_meting4.xlsx", "NL_1532uur_MM_BGS_meting5.xlsx"] ; 
-
-S1_BGSM1_O2norm_630nm = zeros(4000,5);
-S1_BGSM2_O2norm_630nm = zeros(4000,5);
-S1_BGSM3_O2norm_630nm = zeros(4000,5);
-S1_BGSM4_O2norm_630nm = zeros(4000,5);
-S1_BGSM5_O2norm_630nm = zeros(4000,5); 
-for i = 2:1:6
-    S1_BGSM1_O2norm_630nm(:,i-1) = xlsread(f_1(1), i+5, 'A2:A4001');
-    S1_BGSM2_O2norm_630nm(:,i-1) = xlsread(f_BGS(2), i, 'A2:A4001');
-    S1_BGSM3_O2norm_630nm(:,i-1) = xlsread(f_BGS(3), i, 'A2:A4001');
-    S1_BGSM4_O2norm_630nm(:,i-1) = xlsread(f_BGS(4), i, 'A2:A4001');
-    S1_BGSM5_O2norm_630nm(:,i-1) = xlsread(f_BGS(5), i, 'A2:A4001');
-end
-
-S1_BGSM1_O2norm_670nm = zeros(4000,5);
-S1_BGSM2_O2norm_670nm = zeros(4000,5);
-S1_BGSM3_O2norm_670nm = zeros(4000,5);
-S1_BGSM4_O2norm_670nm = zeros(4000,5);
-S1_BGSM5_O2norm_670nm = zeros(4000,5); 
-for i = 2:1:6
-    S1_BGSM1_O2norm_670nm(:,i-1) = xlsread(f_1(1), i+5, 'B2:B4001');
-    S1_BGSM2_O2norm_670nm(:,i-1) = xlsread(f_BGS(2), i, 'B2:B4001');
-    S1_BGSM3_O2norm_670nm(:,i-1) = xlsread(f_BGS(3), i, 'B2:B4001');
-    S1_BGSM4_O2norm_670nm(:,i-1) = xlsread(f_BGS(4), i, 'B2:B4001');
-    S1_BGSM5_O2norm_670nm(:,i-1) = xlsread(f_BGS(5), i, 'B2:B4001');
-end
-%% Save 
-for iii = 1:1:12 
-    for ii = ["630nm", "670nm"] 
-        for i = 1:1:9
-            if exist(sprintf('S2_Patch%dM%d_O2norm_%s',iii,i,ii),'var') == 1
-               filename = sprintf('S1_Patch%dM%d_O2norm_%s',iii,i,ii) ; 
-               save(filename) 
-            elseif exist(sprintf('S1_BGSM%d_O2norm_%s',i,ii),'var') == 1 
-               filename = sprintf('S1_BGS%dM%d_O2norm_%s',i,ii) ; 
-               save(filename) 
-            else
-                exist(sprintf('S1_Patch%dM%d_O2norm_%s',iii,i,ii),'var') == 0 ; 
-                continue 
-            end 
-        end 
-    end 
 end
