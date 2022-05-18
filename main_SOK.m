@@ -1,6 +1,6 @@
 %% SOK processing 
 % Y. (Yasmin) Ben Azouz
-% Version: 16.05.2022
+% Version: 17.05.2022
 
 clear 
 close all 
@@ -27,7 +27,7 @@ sok = cell(1,D) ;
 
 %630nm
 sok(1) = {ppix25_515nm_630nm(:,7:17)}; %25um en 030406 filter 
-
+% sok(1).conc = 25 ; 
 sok(2) = {ppix200_515nm_630nm(:,1:10)}; %200um en 030406 filter 
 
 sok(3) = {ppix400_515nm_630nm(:,4:13)}; %400um en 0304 filter 
@@ -42,6 +42,7 @@ sok(7) = {ppix400_515nm_670nm(:,4:13)}; %400um en 0304 filter
 sok(8) = {ppix400_515nm_670nm(:,14:22)}; %400um en 030406 filter 
 
 %% Smooth and fit to a mono-exponential fit. 
+% Add standard deviation
 smoothsok = cell(1,D) ; 
 coeffsok = cell(1,D) ; 
 
@@ -52,8 +53,37 @@ for j = 1:D
     smoothsok(j) = {DataPrep(sok{j})} ; 
     DFexpfit(smoothsok{j}.smooth)
     coeffsok(j) = {LifetimeDF(smoothsok{j}.smooth, samples, initials)} ;
+end
+%% I0670/I0630 and [PpIX]
+conc = [25 ;200 ;400 ;400] ; 
+ratio = zeros(1,4) ; 
+for i = 1:4 
+    ratio(1,i) = smoothsok{i+4}.max / smoothsok{i}.max ; 
 end 
-%% Integral fitting 
+% Find linearity within Intensity and concentration
+x_conc = [ones(length(conc),1) conc] ; 
+b = x_conc\ratio' ; % regression coefficient + intercept 
+ylin = x_conc*b; % lineaire formule 
+
+%% Plot 1 - Initial Intensity Ratios and [PpIX]
+figure(1)
+scatter(conc(1), ratio(1),80,'filled','d')
+hold on
+scatter(conc(2), ratio(2),80,'filled','d')
+hold on
+scatter(conc(3), ratio(3),80,'filled','d')
+hold on
+scatter(conc(4), ratio(4),80,'filled','d')
+hold on 
+plot(conc,ylin)
+title('Initial Intensity Ratios and [PpIX]','Fontsize',16) ; 
+xlabel('PpIX concentration [µM]','Fontsize',16) ; 
+ylabel('I_{0}^{670}/I_{0}^{630}','Fontsize',16) ; 
+ylim([0 1])
+legend('25µM; 030406 filter', '200µM; 030406 filter',...
+    '400µM; 0304 filter', '400µM; 030406 filter',...
+    'Location','northwest') ; 
+%% Integral fitting
 % y_E = x1*exp(x2*xdata) ;           % E-type mono exponential fit 
 % y_P = x3*exp((2*x2)*xdata) ;       % P-type mono exponential fit 
 int = cell(2,D) ; 
@@ -75,90 +105,5 @@ end
 
 
 
-%% ML - lsqcurvefit
-FUN_1_E = @(x1,xdata)x1(1)*exp(x1(2)*xdata) ;           % E-type mono exponential fit 
-FUN_1_P = @(x2,xdata)x2(1)*exp((2*x2(2))*xdata) ;       % P-type mono exponential fit 
 
-FUN_1_EP = @(x3,xdata)x3(1)*exp(x3(2)*xdata)+x3(3)*exp((2*x3(2))*xdata);     % First order EP bi exponential fit 
-%% First order E type decay 
-x1 = lsqcurvefit(FUN_1_E,x10,xdata,ydata, lb, ub, options) ; 
-for e = 1:D 
-    y = smoothsok{e}.smooth ;
-    ydata = y((1:samples),1) ; 
-    xdata  = linspace(1,5,samples)' ;
-    x10 = [1,0.1] ;
-    %x30 = [1,0.5,0.1] ;
-    soklm{e} = lsqcurvefit(FUN_1_EP,x30,xdata,ydata, lb, ub, options) ; 
-    
-    subplot(2,4,e) ;
-    plot(xdata,ydata,'ko',xdata,FUN_1_E(x1,xdata),'b-')
-end
-%% First order E and P type decay
-% First order EP bi exponential fit 
-
-FUN_1_EP = @(x3,xdata)x3(1)*exp(x3(2)*xdata)+x3(3)*exp((2*x3(2))*xdata);  
-
-samples = 700 ; %number of samples you want to fit / plot 
-options = optimoptions('lsqcurvefit','Algorithm','levenberg-marquardt',...
-    'Display', 'iter', 'MaxFunctionEvaluations', 1000); 
-lb = [] ; 
-ub = [] ; 
-soklm = cell(1,D) ; 
-
-for ep = 1:D 
-    y = smoothsok{ep}.smooth ;
-    ydata = y((1:samples),1) ; 
-    xdata  = linspace(1,5,samples)' ;
-    % x30 = [2.8, 0.461, 0.147] ; %fit rechte lijn op 4
-    % x30 = [1,0.5,0.1] ;
-    x30 = [1.6, 0.49, 0.01] ; %fit rechte lijn op 2 (beste fit)
-    % x30 = [1.6, 0.6, 0.01] ; %fit rechte lijn op 3 en 6 
-    x3 = lsqcurvefit(FUN_1_EP,x30,xdata,ydata, lb, ub, options) ; 
-    
-    %tau = 1/x3{1,1}(2); 
-
-    %soklm(ep) = {struct('coeff', {x3}, 'tau', {tau})} ; 
-    
-    subplot(2,4,ep) ;
-    plot(xdata,ydata,'ko',xdata,FUN_1_EP(x3,xdata),'b-')
-end 
-
-%% Plot fit and data loop >> FOUT IN CODE
-x  = linspace(1,5,700)' ; 
-figure(2)
-for jj = 1:D
-    subplot(2,4,jj) ;
-    plot(x, smoothsok{1,jj}.smooth(1:700)) 
-    hold on
-%     for j = 1:1:9
-%         plot(x, sok{1,jj}(1:700,j)) 
-%         hold on
-%     end 
-end  
-%% Plot fit and smooth >> FOUT IN CODE 
-figure(2)
-xdata  = linspace(1,5,2000)' ;
-for jj = 4
-    p_1 = coeffsok{1,jj}.multipliers(1,1) ; 
-    % p_2 = coeffsok{1,jj}.multipliers(2,1) ;
-    l = coeffsok{1,jj}.lambda ; 
-    subplot(1,2,1) ;
-    monofit = p_1*exp(l*xdata) ; 
-    plot(xdata, monofit)
-    hold on 
-    subplot(1,2,2)
-    plot (xdata, smoothsok{1,jj}.smooth)  
-    %legend('fit', 'smooth')
-end  
-
-%% fitting singular for bi exp
-j = 2 ; % number of the sok you want to fit 
-y = smoothsok{j}.smooth ; 
-
-ydata = y((1:700),1) ; 
-xdata  = linspace(1,5,700)' ;
-x30 = [1.6, 0.6, 0.01] ;
-%x30 = [1,0.5,0.1] ;
-x3 = lsqcurvefit(FUN_1_EP,x30,xdata,ydata, lb, ub, options) ; 
-plot(xdata,ydata,'ko',xdata,FUN_1_EP(x3,xdata),'b-')
 

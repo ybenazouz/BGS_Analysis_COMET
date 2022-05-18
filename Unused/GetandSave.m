@@ -1,6 +1,7 @@
 %% Get and Save Data 
 % Y. Ben Azouz
-
+%% NO LONGER NEEDED - SEE STRUCT AND SAVE!!! - DATE: 18.05.2022
+%%
 %The goal of this file is to retrieve the files you need from excel.
 %The files will then be saved to your computer as .mat files.
 %After this is done, you can load the files without it taking too much
@@ -1105,7 +1106,7 @@ for i = 2:1:6
     S3_BGSM6_O20_630nm(:,i-1) = xlsread(f_BGS_O20(6), i, 'A2:A4001');
     S3_BGSM7_O20_630nm(:,i-1) = xlsread(f_BGS_O20(7), i, 'A2:A4001');
     S3_BGSM8_O20_630nm(:,i-1) = xlsread(f_BGS_O20(7), i, 'A2:A4001');
-    S3_BGSM7_O20_630nm(:,i-1) = xlsread(f_BGS_O20(7), i, 'A2:A4001');
+    S3_BGSM9_O20_630nm(:,i-1) = xlsread(f_BGS_O20(7), i, 'A2:A4001');
 end
 
 % Load data - 670 nm

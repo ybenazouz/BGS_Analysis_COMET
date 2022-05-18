@@ -1,6 +1,15 @@
 %% ALA PATCHES EXPERIMENT NEW LASER
-% Fill in amount of measurements for patch one 
+%% SOK processing 
+% Y. (Yasmin) Ben Azouz
+% Version: 17.05.2022
+
+clear 
+close all 
+%% Fill in amount of measurements for patch one 
 M = 8  ; 
+
+S = load(xlsread('BGS_M1_0920_O20')) ; 
+
 %% Load data, smooth data, fit data
 patch_1 = cell(1,M);
 smoothpatch_1 = cell(1,M) ;
@@ -16,8 +25,7 @@ patch_1(6) = {S3_Patch1M6_O2norm_630nm} ;
 patch_1(7) = {S3_Patch1M7_O2norm_630nm} ; 
 patch_1(8) = {S3_Patch1M8_O2norm_630nm} ; 
 
-%%
-
+%% fitte
 initials = [1.6, 0.49, 0.01] ; 
 samples = 700;
 
@@ -29,7 +37,11 @@ for k = 1:M
    DFexpfit(smoothpatch_1{k}.smooth) % show best number of terms for fit 
    coeffpatch_1(k) = {LifetimeDF(smoothpatch_1{k}.smooth, samples, initials)} ; % fit exponential fit to the signals 
 end
-
+%% I0670/I0630
+ratio = zeros(1,4) ; 
+for i = 1:4 
+    ratio(1,i) = smoothsok{i+4}.max / smoothsok{i}.max ; 
+end 
 %%
 FUN_1_EP = @(x3,xdata)x3(1)*exp(x3(2)*xdata)+x3(3)*exp((2*x3(2))*xdata);  
 
@@ -57,12 +69,3 @@ for ep = 1:M
     subplot(2,4,ep) ;
     plot(xdata,ydata,'ko',xdata,FUN_1_EP(x3,xdata),'b-')
 end 
-
-%% Calculate ratios (MM)
-ratio630670_O2norm =nan(size(Patch1_O2norm_670nm_max));
-ratio630670_O20 =nan(size(Patch1_O20_670nm_max));
-
-for i = 1: size(Patch1_O2norm_670nm_max,2)
-ratio630670_O2norm(i) = Patch1_O2norm_670nm_max(i)/Patch1_O2norm_630nm_max(i);
-ratio630670_O20(i) = Patch1_O20_670nm_max(i)/Patch1_O20_630nm_max(i);
-end

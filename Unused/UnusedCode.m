@@ -2,6 +2,149 @@
 % Y. (Yasmin) Ben Azouz - version: 13.05.2022
 % Code that might still be usefull later on. 
 % Serves only as registration and to not lose them. 
+%% Loop om data cell te vullen en aan newname te plakken - date: 18.05.2022
+for i=1:numel(d)
+    for k=2:1:6
+      data{k-1}=readtable(fullfile(d(i).folder,d(i).name),'sheet',k,...
+          'VariableNamingRule','preserve','Range', range);
+      data{k-1}.Properties.VariableNames{'Dev1/ai0'} = 'nm630';
+      data{k-1}.Properties.VariableNames{'Dev1/ai1'} = 'nm670';
+    end
+    newname(:,i,5) = {data} ; 
+end
+%%
+%[~,sheet_name]=xlsfinfo('BGS_M1_0920_O20.xlsx');
+data_end = cell(1,5) ; 
+range = 'A1:B4001'; 
+
+for k=2:1:6
+  data_end{k-1}=readtable('BGS_M9_1700_O2norm.xlsx','sheet',k,...
+      'VariableNamingRule','preserve','Range', range);
+  data_end{k-1}.Properties.VariableNames{'Dev1/ai0'} = 'nm630';
+  data_end{k-1}.Properties.VariableNames{'Dev1/ai1'} = 'nm670';
+end
+%% Calculate ratios of maxima (MM) - date: 17.05.2022
+ratio630670_O2norm =nan(size(Patch1_O2norm_670nm_max));
+ratio630670_O20 =nan(size(Patch1_O20_670nm_max));
+
+for i = 1: size(Patch1_O2norm_670nm_max,2)
+ratio630670_O2norm(i) = Patch1_O2norm_670nm_max(i)/Patch1_O2norm_630nm_max(i);
+ratio630670_O20(i) = Patch1_O20_670nm_max(i)/Patch1_O20_630nm_max(i);
+end
+%% Sort signal - SOK - date: 17.05.2022
+D = 8 ; % Amount of data structures to use
+sok = struct ; 
+sok.um25 = cell(1,2) ; 
+sok.um200 = cell(1,2) ; 
+sok.um400 = cell(1,4) ; 
+
+%630nm
+sok.um25(1) = {ppix25_515nm_630nm(:,7:17)}; %25um en 030406 filter 
+
+sok.um200(1) = {ppix200_515nm_630nm(:,1:10)}; %200um en 030406 filter 
+
+sok.um400(1) = {ppix400_515nm_630nm(:,4:13)}; %400um en 0304 filter 
+sok.um400(2) = {ppix400_515nm_630nm(:,14:22)}; %400um en 030406 filter 
+
+% 670nm
+sok.um25(2) = {ppix25_515nm_670nm(:,7:17)}; %25um en 030406 filter 
+
+sok.um200(2) = {ppix200_515nm_670nm(:,1:10)}; %200um en 030406 filter 
+
+sok.um400(3) = {ppix400_515nm_670nm(:,4:13)}; %400um en 0304 filter 
+sok.um400(4) = {ppix400_515nm_670nm(:,14:22)}; %400um en 030406 filter 
+
+%% LM curvefit verwijderd uit SOK - date: 17.05.2022
+%% ML - lsqcurvefit 
+FUN_1_E = @(x1,xdata)x1(1)*exp(x1(2)*xdata) ;           % E-type mono exponential fit 
+FUN_1_P = @(x2,xdata)x2(1)*exp((2*x2(2))*xdata) ;       % P-type mono exponential fit 
+
+FUN_1_EP = @(x3,xdata)x3(1)*exp(x3(2)*xdata)+x3(3)*exp((2*x3(2))*xdata);     % First order EP bi exponential fit 
+%% First order E type decay 
+x1 = lsqcurvefit(FUN_1_E,x10,xdata,ydata, lb, ub, options) ; 
+for e = 1:D 
+    y = smoothsok{e}.smooth ;
+    ydata = y((1:samples),1) ; 
+    xdata  = linspace(1,5,samples)' ;
+    x10 = [1,0.1] ;
+    %x30 = [1,0.5,0.1] ;
+    soklm{e} = lsqcurvefit(FUN_1_EP,x30,xdata,ydata, lb, ub, options) ; 
+    
+    subplot(2,4,e) ;
+    plot(xdata,ydata,'ko',xdata,FUN_1_E(x1,xdata),'b-')
+end
+%% First order E and P type decay
+% First order EP bi exponential fit 
+
+FUN_1_EP = @(x3,xdata)x3(1)*exp(x3(2)*xdata)+x3(3)*exp((2*x3(2))*xdata);  
+
+samples = 700 ; %number of samples you want to fit / plot 
+options = optimoptions('lsqcurvefit','Algorithm','levenberg-marquardt',...
+    'Display', 'iter', 'MaxFunctionEvaluations', 1000); 
+lb = [] ; 
+ub = [] ; 
+soklm = cell(1,D) ; 
+
+for ep = 1:D 
+    y = smoothsok{ep}.smooth ;
+    ydata = y((1:samples),1) ; 
+    xdata  = linspace(1,5,samples)' ;
+    % x30 = [2.8, 0.461, 0.147] ; %fit rechte lijn op 4
+    % x30 = [1,0.5,0.1] ;
+    x30 = [1.6, 0.49, 0.01] ; %fit rechte lijn op 2 (beste fit)
+    % x30 = [1.6, 0.6, 0.01] ; %fit rechte lijn op 3 en 6 
+    x3 = lsqcurvefit(FUN_1_EP,x30,xdata,ydata, lb, ub, options) ; 
+    
+    %tau = 1/x3{1,1}(2); 
+
+    %soklm(ep) = {struct('coeff', {x3}, 'tau', {tau})} ; 
+    
+    subplot(2,4,ep) ;
+    plot(xdata,ydata,'ko',xdata,FUN_1_EP(x3,xdata),'b-')
+end 
+
+%% Plot fit and data loop >> FOUT IN CODE
+x  = linspace(1,5,700)' ; 
+figure(2)
+for jj = 1:D
+    subplot(2,4,jj) ;
+    plot(x, smoothsok{1,jj}.smooth(1:700)) 
+    hold on
+%     for j = 1:1:9
+%         plot(x, sok{1,jj}(1:700,j)) 
+%         hold on
+%     end 
+end  
+%% Plot fit and smooth >> FOUT IN CODE 
+figure(2)
+xdata  = linspace(1,5,2000)' ;
+for jj = 4
+    p_1 = coeffsok{1,jj}.multipliers(1,1) ; 
+    % p_2 = coeffsok{1,jj}.multipliers(2,1) ;
+    l = coeffsok{1,jj}.lambda ; 
+    subplot(1,2,1) ;
+    monofit = p_1*exp(l*xdata) ; 
+    plot(xdata, monofit)
+    hold on 
+    subplot(1,2,2)
+    plot (xdata, smoothsok{1,jj}.smooth)  
+    %legend('fit', 'smooth')
+end  
+
+%% fitting singular for bi exp
+j = 2 ; % number of the sok you want to fit 
+y = smoothsok{j}.smooth ; 
+
+ydata = y((1:700),1) ; 
+xdata  = linspace(1,5,700)' ;
+x30 = [1.6, 0.6, 0.01] ;
+%x30 = [1,0.5,0.1] ;
+x3 = lsqcurvefit(FUN_1_EP,x30,xdata,ydata, lb, ub, options) ; 
+plot(xdata,ydata,'ko',xdata,FUN_1_EP(x3,xdata),'b-')
+%% LEGE RUIMTE BOVENSTAANDE BELANRIJK
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% SOK no longer needed - date: 16.05.2022
 
 j = 6 ; % number of the sok you want to fit 
