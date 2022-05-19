@@ -2,6 +2,26 @@
 % Y. (Yasmin) Ben Azouz - version: 13.05.2022
 % Code that might still be usefull later on. 
 % Serves only as registration and to not lose them. 
+%% Loop to check the patches with one measurement, as they do not load properly into ND struct, processed into code - date: 19.05.2022
+% DATASET= patches(12) ; 
+% WILDSTR="_*.xlsx";      % the wildcard pattern to match file naming convention
+% d=dir(fullfile(ROOT_DIR,strcat(DATASET,WILDSTR))); % and return all those matching files
+% newname = split(erase({d.name},'.xlsx'),'_') ;
+% if (numel(d) == 1) == 1  
+%     newname = reshape(newname,[1,4]) ; 
+% end 
+% for i=1:numel(d)
+%     for k=2:1:1+N
+%         data{k-1}=readtable(fullfile(d(i).folder,d(i).name),'sheet',k,...
+%           'VariableNamingRule','preserve','Range', range);
+%         data{k-1}.Properties.VariableNames{'Dev1/ai0'} = 'nm630';
+%         data{k-1}.Properties.VariableNames{'Dev1/ai1'} = 'nm670';
+%     end
+%     newname(:,i,5) = {data} ;
+% end
+% %%
+% SUBJ_2.(patches(12))= newname ;
+
 %% Loop om data cell te vullen en aan newname te plakken - date: 18.05.2022
 for i=1:numel(d)
     for k=2:1:6

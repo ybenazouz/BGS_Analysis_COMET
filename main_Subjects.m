@@ -1,37 +1,25 @@
 %% ALA PATCHES EXPERIMENT NEW LASER
 %% SOK processing 
 % Y. (Yasmin) Ben Azouz
-% Version: 17.05.2022
+% Version: 18.05.2022
 
 clear 
 close all 
-%% Fill in amount of measurements for patch one 
-M = 8  ; 
 
-S = load(xlsread('BGS_M1_0920_O20')) ; 
-
+load('SUBJ_2') ;
+%% Load all subjects in one cell 
 %% Load data, smooth data, fit data
-patch_1 = cell(1,M);
-smoothpatch_1 = cell(1,M) ;
-max = zeros(1,M) ; 
-coeffpatch_1 = cell(1,M) ;
-
-patch_1(1) = {S3_Patch1M1_O2norm_630nm} ; 
-patch_1(2) = {S3_Patch1M2_O2norm_630nm} ; 
-patch_1(3) = {S3_Patch1M3_O2norm_630nm} ; 
-patch_1(4) = {S3_Patch1M4_O2norm_630nm} ; 
-patch_1(5) = {S3_Patch1M5_O2norm_630nm} ; 
-patch_1(6) = {S3_Patch1M6_O2norm_630nm} ; 
-patch_1(7) = {S3_Patch1M7_O2norm_630nm} ; 
-patch_1(8) = {S3_Patch1M8_O2norm_630nm} ; 
-
-%% fitte
 initials = [1.6, 0.49, 0.01] ; 
 samples = 700;
+subject_number = 4 ; %number of subjects included 
+
+%timestamps = 
+
+%SUBJ_2.S1.
 
 for k = 1:M
-%    file = sprintf('S3_Patch1M%d_O2norm_630nm',k);
-%    patch_1(k) = file;
+   file = sprintf('SUBJ_',k);
+   patch_1(k) = file;
    smoothpatch_1(k) = {DataPrep(patch_1{k})} ; % smooth / correct data 
    max(1,k) = smoothpatch_1{k}.max  ; % retrieve maxima 
    DFexpfit(smoothpatch_1{k}.smooth) % show best number of terms for fit 

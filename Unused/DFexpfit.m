@@ -1,4 +1,7 @@
 function [] = DFexpfit(y)
+% 18.05.2022 (Yasmin): I am doubting the accuracy of this function, so it
+% will be removed and no longer used until further notice. 
+
 % DFEXPFIT gives the optimal amount of coefficients to use for your data 
 % In het andere onderzoek hebben ze chi squared gebruikt om de optimale fit
 % te bepalen, heb ik niet gedaan. Evt nog naar kijken? 
