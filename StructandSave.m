@@ -33,7 +33,7 @@ SUBJ_3 = struct('S1',[],'S2',[],'S3',[],'S4',[],'S5',[],...
     'S6',[],'S7',[],'S8',[],'S9',[],'S10',[],'S11',[],'S12',[],'BGS',[]) ;
 SUBJ_4 = struct('S1',[],'S2',[],'S3',[],'S4',[],'S5',[],...
     'S6',[],'S7',[],'S8',[],'S9',[],'S10',[],'S11',[],'S12',[],'BGS',[]) ;
-%% 
+
 SUBJ_3_515nm = struct('S1',[],'S2',[],'S3',[],'S4',[],'S5',[],...
     'S6',[],'S7',[],'S8',[],'S9',[],'S10',[],'S11',[],'S12',[],'BGS',[]) ;
 
@@ -61,8 +61,13 @@ for p=1:numel(patches)
     WILDSTR="_*.xlsx";      % the wildcard pattern to match file naming convention
     d=dir(fullfile(ROOT_DIR,strcat(DATASET,WILDSTR))); % and return all those matching files
     newname = split(erase({d.name},'.xlsx'),'_') ;
-    if (numel(d) == 1) == 1  
+    if (numel(d) == 1) == 1  % dit nog niet echt getest  
         newname = reshape(newname,[1,4]) ; 
+        newd = cell(1,numel(newname)); 
+        for dd = 1:numel(newname) 
+            newd(1,dd) = newname(dd,1) ; 
+            newname = newd ; 
+        end 
     end     
     for i=1:numel(d)
         for k=2:1:1+N
@@ -73,11 +78,15 @@ for p=1:numel(patches)
         end
         newname(:,i,5) = {data} ; 
     end
-    SUBJ_1.(patches(p))= newname ; 
+    SUB_3.(patches(p))= newname ; 
 end 
 %% Save struct 
-save('DataStructs/SUBJ_1') ; 
-save('DataStructs/SUBJ_2') ;
-save('DataStructs/SUBJ_3') ;
-save('DataStructs/SUBJ_4') ;
-save('DataStructs/SUBJ_3_515nm') ; 
+
+% save('DataStructs/SUB_1','SUB_1') ; 
+% save('DataStructs/SUB_2','SUB_2') ; 
+% save('DataStructs/SUB_3','SUB_3') ; 
+% save('DataStructs/SUB_4','SUB_4') ; 
+%% Save entire workspace as file subjects 
+save('SUBJECTS') ; 
+%%
+save('DataStructs/SUB_3_515nm','SUB_3_515nm') ; 

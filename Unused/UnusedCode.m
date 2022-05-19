@@ -2,6 +2,73 @@
 % Y. (Yasmin) Ben Azouz - version: 13.05.2022
 % Code that might still be usefull later on. 
 % Serves only as registration and to not lose them. 
+%% Meteen tekenenen plot in loop - date: 19.05.2022
+%             x_0 = str2double(data(:,bb,3))+360 ; 
+%             y_630_0 = smooth{1}{1}.max ; %630nm 
+%         addpoints(h,x_0,y_630_0,x_norm,y_630_norm)
+%         drawnow 
+
+%% data sorteren naar tijd - niet nodig, meteen figuur maken - date: 19.05.2022
+
+% subs = fieldnames(SUBJECTS) ; 
+% for ss = 1:numel(subs) %subjects
+%     data = SUBJECTS.(subs{ss}) ; 
+%     fields = fieldnames(SUBJECTS.(subs{ss})) ;
+    for pp = 1:numel(fields) % patches 
+        data2 = data.(fields{pp}) ; 
+            time = sort(SUBJECTS.SUB_4.pp,3) ;
+    end
+% end (:,ii,3)
+% rowtimes = SUBJECTS.SUB_3.S1(:,1,3) ; 
+% TT = timetable(
+
+%% Het verbeteren van de 1 meting fouten in de data met volgende code -date: 19.05.2022
+load('SUBJECTS')
+d= SUB_2.S12 ; 
+    d = reshape(d,[4,1,5]) ;
+    newd = cell(1,1,5); 
+    
+    newd(:,1,1) = d(1,:,1) ;
+    newd(:,1,2) = d(2,:,1) ;
+    newd(:,1,3) = d(3,:,1) ;
+    newd(:,1,4) = d(4,:,1) ;
+    newd(:,1,5) = d(1,:,5) ; 
+SUB_2.S12 = newd ; 
+
+%% maxima - date: 19.05.2022
+%     max(1,ii) = smooth{1,ii}.max ; % retrieve maxima
+%     max(2,ii) = smooth{2,ii}.max ; 
+
+%% Laden in struct van alle subjects - date: 19.05.2022
+% SUB_1 = load('DataStructs/SUB_1') ; 
+% SUB_2 = load('DataStructs/SUB_2') ;
+% SUB_3 = load('DataStructs/SUB_3') ; 
+% SUB_4 = load('DataStructs/SUB_4') ; 
+load('DataStructs/SUB_1') ; 
+load('DataStructs/SUB_2') ;
+load('DataStructs/SUB_3') ; 
+load('DataStructs/SUB_4') ; 
+% subs = ["DataStructs/SUB_1","DataStructs/SUB_2","DataStructs/SUB_3",...
+%     "DataStructs/SUB_4"] ;
+%%
+SUBJECTS = struct('subjects',load('DataStructs/SUB_1'),...
+    load('DataStructs/SUB_2'),...
+    load('DataStructs/SUB_3'),...
+    load('DataStructs/SUB_4')) ; 
+%%
+SUBJECTS = load('DataStructs/SUB_1',...
+    'DataStructs/SUB_2',...
+    'DataStructs/SUB_3',...
+    'DataStructs/SUB_4') ; 
+
+%% Overzetten in matrix data, cell was beter + gekloot toch matrix - date:19.05.2022
+        % wave(2,ii(:,bb)) = {dS1M1{1,1}{1,bb}.nm670} ; 
+%         nm670(bb) = {dS1M1{1,1}{1,bb}.nm670} ; %670 nm for one measurement in 1x5 cell
+%         nm630(bb) = {dS1M1{1,1}{1,bb}.nm630} ; %630 nm for one measurement in 1x5 cell
+
+nm670 = zeros(length(dS1M1{1,1}{1,bb}.nm670),numel(dS1M1{1,1})) ;
+dS1M1{1,1}{1,bb}.nm670
+
 %% Loop to check the patches with one measurement, as they do not load properly into ND struct, processed into code - date: 19.05.2022
 % DATASET= patches(12) ; 
 % WILDSTR="_*.xlsx";      % the wildcard pattern to match file naming convention
