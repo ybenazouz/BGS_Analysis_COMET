@@ -1,6 +1,8 @@
 function [structure] = DataPrep(y,M)
 % DATAPREP 
 % We want to smooth out the data. 
+% y = 
+% M = amount of measurements done per measurement
 
 % Correction >> first remove large outliers for each measurement, use
 % Savitzky-Golay filter. This will work best, because we want to maintain

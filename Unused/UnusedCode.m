@@ -1,7 +1,190 @@
 %% Unused Code COMET - TM2
-% Y. (Yasmin) Ben Azouz - version: 13.05.2022
+% Y. (Yasmin) Ben Azouz - version: 20.05.2022
 % Code that might still be usefull later on. 
 % Serves only as registration and to not lose them. 
+%% Nan uit sok 9 verwijderen - date: 23.05.2022
+load SOK23temp
+sticker = SOK23(9,7) ;  
+nan = sticker{1} ; 
+nan(end) = [] ; 
+SOK23(9,7) = {nan} ;
+clearvars -except SOK23
+% change name of file original 
+save('SOK23') ; 
+
+%% Nan uit parts 8 verwijderen - date: 23.05.2022
+load PARTS
+sticker = PARTS(16,3) ;  
+nan = sticker{1} ; 
+nan(end) = [] ; 
+PARTS(16,3) = {nan} ;
+clearvars -except PARTS
+% change name of file original 
+save('PARTS') ; 
+
+%% parts loop smoothed en fitten - date: 23/05/2022
+
+for j = 1:N  
+    file = sprintf('P%d',j);
+    parts(j) = struct2cell(load(file));
+    smoothparts(j) = {DataPrep(parts{j})} ; 
+    DFexpfit(smoothparts{j}.smooth)
+    coeffparts(j) = {LifetimeDF(smoothparts{j}.smooth, samples, initials)} ;
+end
+
+%% Verbeteren BGS M6 S3 - date: 20.05.2022
+load SUBJECTS
+fout = SUB_3.BGS(:,11,:) ;
+SUB_3.BGS(:,11,:) = [] ; 
+% change name of file original 
+save('SUBJECTS') ; 
+%% Fit stond not onder aan main subjects werkte niet goed LM - date: 20.05.2022
+FUN_1_EP = @(x3,xdata)x3(1)*exp(x3(2)*xdata)+x3(3)*exp((2*x3(2))*xdata);  
+
+samples = 700 ; %number of samples you want to fit / plot 
+options = optimoptions('lsqcurvefit','Algorithm','levenberg-marquardt',...
+    'Display', 'iter', 'MaxFunctionEvaluations', 1000); 
+lb = [] ; 
+ub = [] ; 
+patch_1lm = cell(1,M) ; 
+
+for ep = 1:M 
+    y = smoothpatch_1{ep}.smooth ;
+    ydata = y((1:samples),1) ; 
+    xdata  = linspace(1,5,samples)' ;
+    % x30 = [2.8, 0.461, 0.147] ; %fit rechte lijn op 4
+    % x30 = [1,0.5,0.1] ;
+    x30 = [1.6, 0.49, 0.01] ; %fit rechte lijn op 2 (beste fit)
+    % x30 = [1.6, 0.6, 0.01] ; %fit rechte lijn op 3 en 6 
+    x3 = lsqcurvefit(FUN_1_EP,x30,xdata,ydata, lb, ub, options) ; 
+    
+    %tau = 1/x3{1,1}(2); 
+
+    %soklm(ep) = {struct('coeff', {x3}, 'tau', {tau})} ; 
+    
+    subplot(2,4,ep) ;
+    plot(xdata,ydata,'ko',xdata,FUN_1_EP(x3,xdata),'b-')
+end
+%% proberen te plotten van data op de 19e - date: 20.05.2022
+figure 
+subplot(2,2,ss)
+plot(plot_O2norm(1,:), plot_O2norm(2,:),'ko-')
+hold on 
+plot(plot_O2norm(1,:), plot_O2norm(3,:),'ko--')
+hold on
+plot(plot_O20(1,:), plot_O20(2,:),'bo-')
+hold on 
+plot(plot_O20(1,:), plot_O20(3,:),'bo--')
+
+%% eerste applicatie is M1 bij allemaal
+figure 
+xlim = linspace(0300, 1500, 12*60) ; 
+hold on
+subs = fieldnames(SUBJECTS) ; 
+for ss = 4 %:numel(subs) %subjects
+    data = SUBJECTS.(subs{ss}) ; 
+    fields = fieldnames(SUBJECTS.(subs{ss})) ;
+    for pp = 1:numel(fields) % patches 
+        data2 = data.(fields{pp}) ;
+            x = str2double(data2(:,1,3)); 
+        if pp == 1;2;3;4 == 1 ; 
+            x+(11*60) == x ; 
+        else 
+            x+(2*60) == x ; 
+        end 
+        y1 = data2(:,1,6); 
+        y = y1{1,1}{1,1}.max ; 
+        % txt = '(data2(:,1,1))' ;
+        plot(x,y,'ko-')%,'DisplayName',txt)
+    end 
+end 
+%% maxima en bgs plotten 
+figure 
+xlim = linspace(3,14) ; 
+hold on
+subs = fieldnames(SUBJECTS) ; 
+for ss = 1:numel(subs) %subjects
+    subplot(2,2,ss) ; 
+    hold on
+    data = SUBJECTS.(subs{ss}) ; 
+    fields = fieldnames(SUBJECTS.(subs{ss})) ;
+    for pp = 5:numel(fields)-1 % patches 
+        data2 = data.(fields{pp}) ;
+            x = pp-2;
+            y1 = data2(:,1,6); 
+            y = y1{1,1}{1,1}.max ; 
+            % txt = '(data2(:,1,1))' ;
+            plot(x,y,'ko-')%,'DisplayName',txt)
+    end 
+    for pp = 1:4 
+        data2 = data.(fields{pp}) ;
+            x = pp+10;
+            y1 = data2(:,1,6); 
+            y = y1{1,1}{1,1}.max ; 
+            % txt = '(data2(:,1,1))' ;
+            plot(x,y,'ko-')%,'DisplayName',txt)
+    end
+    for pp = 13 
+        data2 = data.(fields{pp}) ;
+        for gg = 1:length(data2(:,:,1))
+           if (data2(:,gg,4) == {'O2norm'}) == 1 
+                x = 3+gg ;
+                y1 = data2(:,gg,6); 
+                y = y1{1,1}{1,1}.max ; 
+                % txt = '(data2(:,1,1))' ;
+                plot(x,y,'bo-')%,'DisplayName',txt)
+            end 
+        end
+    end 
+end 
+
+%% 
+figure 
+xlim = linspace(3,14) ; 
+hold on
+subs = fieldnames(SUBJECTS) ; 
+for ss = 1:numel(subs) %subjects
+    subplot(2,2,ss) ; 
+    hold on
+    data = SUBJECTS.(subs{ss}) ; 
+    fields = fieldnames(SUBJECTS.(subs{ss})) ;
+    for pp = 5:numel(fields)-1 % patches 
+        data2 = data.(fields{pp}) ;
+        %% O2 
+        dataO2 = data2(:,:,4) ; 
+        %% time 
+        datatime = data2(:,:,3) ; 
+        data2(:,:,3) = {str2double(datatime{1,1})+200} 
+    end
+%%
+    for pp = 1:4 
+        data2 = data.(fields{pp}) ;
+        
+    end
+    for pp = 13 
+        data2 = data.(fields{pp}) ;
+        for gg = 1:length(data2(:,:,1))
+           if (data2(:,gg,4) == {'O2norm'}) == 1 
+                x = 3+gg ;
+                y1 = data2(:,gg,6); 
+                y = y1{1,1}{1,1}.max ; 
+                % txt = '(data2(:,1,1))' ;
+                plot(x,y,'bo-')%,'DisplayName',txt)
+            end 
+        end
+    end 
+end 
+
+
+%% Verbeteren NaNs in S10 !!!!!!!!!!!!!!!!!!!!!!!!!!!! - date: 20.05.2022
+load SUBJECTS
+sticker = SUB_2.S10(:,1,5) ;  
+nan = sticker{1} ; 
+nan(end) = [] ; 
+SUB_2.S10(:,1,5) = {nan} ;
+% change name of file original 
+save('SUBJECTS') ; 
+
 %% Meteen tekenenen plot in loop - date: 19.05.2022
 %             x_0 = str2double(data(:,bb,3))+360 ; 
 %             y_630_0 = smooth{1}{1}.max ; %630nm 

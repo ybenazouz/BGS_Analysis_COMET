@@ -13,8 +13,6 @@ close all
 % every measurement. Click open when pop up arrives. 
 
 ROOT_DIR = uigetdir ; 
-% d = uigetdir(pwd, 'Select a folder');
-
 %% Definitions 
 % Check if these variables are correct and according to the data you have. 
 
@@ -53,7 +51,7 @@ for p=1:numel(patches)
     end
 end 
 
-%% Loop to fill patches struct with ND-arrays. 
+%% Subjects ALA - Loop to fill patches struct with ND-arrays. 
 % change SUBJ_X to the correct X 
 
 for p=1:numel(patches)
@@ -80,13 +78,64 @@ for p=1:numel(patches)
     end
     SUB_3.(patches(p))= newname ; 
 end 
-%% Save struct 
-
-% save('DataStructs/SUB_1','SUB_1') ; 
-% save('DataStructs/SUB_2','SUB_2') ; 
-% save('DataStructs/SUB_3','SUB_3') ; 
-% save('DataStructs/SUB_4','SUB_4') ; 
 %% Save entire workspace as file subjects 
+clearvars -except SUBJECTS
 save('SUBJECTS') ; 
-%%
-save('DataStructs/SUB_3_515nm','SUB_3_515nm') ; 
+% save('DataStructs/SUB_3_515nm','SUB_3_515nm') ; 
+
+%% Parts - Loop to fill ND-array with all different parts.
+
+N = 15 ; % amount of measurements for each timestamp
+data = cell(1,N) ;
+range = 'A1:B4001';
+
+DATASET= "expCOMETparts" ; 
+WILDSTR="*.xlsx";      % the wildcard pattern to match file naming convention
+d=dir(fullfile(ROOT_DIR,strcat(DATASET,WILDSTR))); % and return all those matching files
+newname = split(erase({d.name},'.xlsx'),'_') ;
+for i=1:numel(d)
+    for k=2:1:1+N
+        file = fullfile(d(i).folder,d(i).name) ; 
+        data{k-1}=readtable(file,'sheet',k,...
+          'VariableNamingRule','preserve','Range', range);
+        data{k-1}.Properties.VariableNames{'Dev1/ai0'} = 'nm630';
+        data{k-1}.Properties.VariableNames{'Dev1/ai1'} = 'nm670';
+    end
+newname(:,i,3) = {data} ; 
+end 
+PARTS = shiftdim(newname) ; 
+
+%% Save entire workspace as file subjects 
+% Remove all workspace variables besides parts 
+clearvars -except PARTS 
+save('PARTS') ; 
+
+%% SOK 23 experiments - Loop to fill ND-array with all different concentrations. 
+
+N = 13 ; % amount of measurements for each timestamp
+data = cell(1,N) ;
+range = 'A1:B4001';
+
+DATASET= "SOK23_" ; 
+WILDSTR="*.xlsx";      % the wildcard pattern to match file naming convention
+d=dir(fullfile(ROOT_DIR,strcat(DATASET,WILDSTR))); % and return all those matching files
+newname = split(erase({d.name},'.xlsx'),'_') ;
+for i=1:numel(d)
+    for k=2:1:1+N
+        file = fullfile(d(i).folder,d(i).name) ; 
+        data{k-1}=readtable(file,'sheet',k,...
+          'VariableNamingRule','preserve','Range', range);
+        data{k-1}.Properties.VariableNames{'Dev1/ai0'} = 'nm630';
+        data{k-1}.Properties.VariableNames{'Dev1/ai1'} = 'nm670';
+    end
+newname(:,i,7) = {data} ; 
+end 
+SOK23 = shiftdim(newname) ; 
+
+%% Save entire workspace as file subjects 
+% Remove all workspace variables besides parts 
+clearvars -except SOK23 
+save('SOK23') ; 
+
+
+
