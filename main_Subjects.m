@@ -5,7 +5,7 @@
 clear 
 close all 
 %% Load all subjects in one struct
-SUBJECTS = load('SUBJECTS') ; 
+SUBJECTS = load('SUBJECTS.mat') ; 
 % SUB_3_515nm = load('DataStructs/SUB_3_515nm') ;
 
 %% Smooth data
