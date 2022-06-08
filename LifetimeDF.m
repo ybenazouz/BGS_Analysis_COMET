@@ -1,7 +1,10 @@
 function [coeff] = LifetimeDF(y, samples,x30) 
 % This function will generate an exponential function to fit the raw intensity data: -A + B*exp(c*x) + D*exp(e*x) + F*exp(g*x)
-% This function will also generate a lineair function to fit the integrated
-% intensity data. 
+% This function will also generate a lineair function to fit the integrated intensity data. 
+% Input variables:
+    % y = data?
+    % samples =
+    % x30 = constants/variables(?)
 %% FIRST METHOD: integral fitting
 % get data
 x  = linspace(1,5,samples)' ;       % exponentials don't do well with large numbers 
